@@ -12,6 +12,7 @@ function Header() {
   useEffect(() => {
     window.addEventListener('scroll', changeColor);
 
+    
     return () => {
       window.removeEventListener('scroll', changeColor);
     };
