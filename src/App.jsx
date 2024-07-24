@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Home from './pages/Home';
 import Search from './pages/Search';
 import Profile from './pages/Profile';
-import Watchlist from './pages/Watchlist';
+import Collection from './pages/Collection';
 import Discover from './pages/Discover';
 import About from './pages/About';
 import Landing from './pages/Landing';
@@ -17,7 +17,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/search" element={<Search />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/watchlist" element={<Watchlist />} />
+        <Route path="/collection" element={<Collection />} />
         <Route path="/discover" element={<Discover />} />
         <Route path="/landing" element={<Landing />} />
         <Route path="/about" element={<About />} />

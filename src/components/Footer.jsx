@@ -10,9 +10,9 @@ function Footer() {
         <nav>
             <ul className='flex gap-8 font- items-center'>
               <li><Link to="/">Home</Link></li>
-              <li><Link to="/watchlist">Watchlist</Link></li>
+              <li><Link to="/collection">Collection</Link></li>
               <li><Link to="/discover">Discover</Link></li>
-              <li><Link to="/discover">Profile</Link></li>
+              <li><Link to="/profile">Profile</Link></li>
               <li className='bg-red-500 text-yellow-100 p-2 px-3 rounded-xl'><Link to="/about">Get in Touch</Link></li>
             </ul>
         </nav>

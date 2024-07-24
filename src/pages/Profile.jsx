@@ -1,19 +1,37 @@
 import MovieHolder from "../components/MovieHolder";
 
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
-function Accordion({ onclick }) {
+function Accordion() {
+  
   const [open, setOpen] = useState(false);
+  const contentRef = useRef(null);
+  const [height, setHeight] = useState('0px');
+
+  useEffect(() => {
+    if (contentRef.current) {
+      //added 32 to account for the p-4 of the div
+      const newHeight = open ? `${contentRef.current.scrollHeight + 32}px` : '0px';
+      setHeight(newHeight);
+    }
+  }, [open]);
+  
   return (
-    <div
-      onClick={() => setOpen((prev) => !prev)}
-      className={`w-full  mx-auto my-8 ${!open && "di"}`}
-    >
-      <h1 className="text-2xl font-bold p-4 bg-gray-200">My Account</h1>
-      <div className="bg-gray-400">
-        <div className="p-4 bg-orange-500 cursor-pointer">Change Password</div>
-        <div className="p-4 bg-gray-200 cursor-pointer">Delete Account</div>
-        <div className="p-4 bg-gray-200 cursor-pointer">Logout</div>
+    <div className="w-full mt-8 border-2">
+      <h1
+        onClick={() => setOpen(prev => !prev)}
+        className="text-xl font-bold cursor-pointer p-4 bg-yellow-50"
+      >
+        My Account
+      </h1>
+      <div
+        ref={contentRef}
+        style={{ height }}
+        className={`bg-gray-500 gap-3 font-bold flex flex-col overflow-hidden transition-all duration-300 ${open ? "p-4" : "p-0"}`}
+      >
+        <div className="p-4 bg-orange-500 cursor-pointer hover:border-2">Change Password</div>
+        <div className="p-4 bg-gray-200 cursor-pointer hover:border-2 border-red-400">Delete Account</div>
+        <div className="p-4 bg-gray-200 cursor-pointer hover:border-2 border-red-400">Logout</div>
       </div>
     </div>
   );
