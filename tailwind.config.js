@@ -5,7 +5,17 @@ export default {
     "./src/**/*.{js,ts,jsx,tsx}",
   ],
   theme: {
-    extend: {},
+    extend: {
+      colors: {
+        'main': '#E69616',
+        'accent': '#005248',
+        'thrid': '#DFE0DF'
+      },
+      backgroundImage: {
+        'gradient': 'linear-gradient(to top, #005248 , #E69616)',
+        'gradient-2': 'radial-gradient(circle, #005248, #216b43, #57822f, #999111, #e69616);',
+      },
+    },
   },
   plugins: [],
 }
