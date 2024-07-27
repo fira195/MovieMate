@@ -2,10 +2,9 @@ import { Link } from "react-router-dom";
 
 function Footer() {
   return (
-    <footer className="bg-gradient p-10 pt-20 px-20 flex justify-between relative">
+    <footer className="bg-gradient p-20 flex justify-between relative">
       <div className="flex items-center gap-6">
-        <div className='w-10 h-10 rotate-45 rounded-2xl bg-main border-2 border-black'></div>
-        <div className="h-20 border-[1px]"></div>
+        <div className='w-10 h-10 rotate-45 bg-main border-2 border-accent'></div>
 
         <nav>
             <ul className='flex gap-8 text-thrid items-center'>

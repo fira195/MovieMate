@@ -19,3 +19,8 @@ export default {
   },
   plugins: [],
 }
+/* colors: {
+        'main': '#E69616',
+        'accent': '#005248',
+        'thrid': '#DFE0DF'
+      }, */

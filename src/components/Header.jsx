@@ -26,9 +26,9 @@ function Header() {
 
 
   return (
-    <header className={`w-full fixed top-0 p-4 px-10 flex gap-4 justify-between transition duration-200 ${color && "bg-main shadow-md"} z-20`}>
+    <header className={`w-full fixed top-0 p-4 px-10 flex gap-4 justify-between transition duration-200 ${color && "bg-main shadow-md"} z-30`}>
       
-      <div className={`w-10 h-10 rotate-45 rounded-2xl ${!color ? "bg-main border-2 border-black" :"bg-red-500"}`}></div>
+      <div className={`w-10 h-10 rotate-45 rounded-sm ${!color ? "bg-accent" :"bg-accent"}`}></div>
       
       <div className='flex gap-10 justify-end items-center w-1/2'>
         

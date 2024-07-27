@@ -23,8 +23,8 @@ function Home() {
             Welcome Back, [User]
           </h1>
           <input
-            className="w-full px-4 p-3 bg-thrid border-2 border-black outline-none mb-4"
-            placeholder="Search Movie"
+            className="w-full px-4 p-3 bg-main border-2 border-black outline-none mb-4"
+            placeholder=""
             type="text"
           />
           <div>

@@ -18,9 +18,9 @@ function MovieCard({id}){
               <p>Rotten Tomatoes: 7.8</p>
             </div>
             <div className="absolute bottom-16 left-16 flex gap-4 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-              <div onClick={(e)=>actions(e)} className="hover:-rotate-12 active:scale-90 transition duration-300 rounded-md bg-gray-500 w-7 h-7 hover:scale-105"></div>
-              <div onClick={(e)=>actions(e)} className="hover:-rotate-12 active:scale-90 transition duration-300 rounded-md bg-red-500 w-7 h-7 hover:scale-105"></div>
-              <div onClick={(e)=>actions(e)} className="hover:-rotate-12 active:scale-90 transition duration-300 rounded-md bg-gray-500 w-7 h-7 hover:scale-105"></div>
+              <div onClick={(e)=>actions(e)} className="hover:-rotate-12 active:scale-90 transition duration-300 rounded-md border-2 border-black w-7 h-7 hover:scale-105"></div>
+              <div onClick={(e)=>actions(e)} className="hover:-rotate-12 active:scale-90 transition duration-300 rounded-md bg-accent w-7 h-7 hover:scale-105"></div>
+              <div onClick={(e)=>actions(e)} className="hover:-rotate-12 active:scale-90 transition duration-300 rounded-md border-2 border-black w-7 h-7 hover:scale-105"></div>
             </div>
           </div>
     )
