@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import MovieHolder from "../components/MovieHolder";
+import { useEffect, useState } from "react";
 
 function Home() {
   const movies = [
@@ -13,13 +14,23 @@ function Home() {
     "interstellar (2004)",
   ];
 
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NGFjODFlNTVkYTQwZWU1YjljNGI4M2M3ODU1OTdlYyIsIm5iZiI6MTcyMjcwNzQwNS4wMjUxMzUsInN1YiI6IjY2YWUzMDc0ZDAwNmY3OTFmZjViNGRhMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bVpvqXGyOYlyCrX_N9EbFbFlbTrmq1NbvzZ5KZTvMMc'
+    }
+  };
+  
+  const url = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1'
+
   const navigate = useNavigate();
 
   return (
     <div className="bg-main h-auto p-6">
       <div className=" w-full h-[40rem] flex gap-40 pr-0 pb-20 p-40 font-semibold">
         <div className=" mt-20">
-          <h1 className="font-bold text-4xl text-black mb-10">
+          <h1 className="font-bold text-4xl mb-10">
             Welcome Back, [User]
           </h1>
           <input
@@ -42,10 +53,12 @@ function Home() {
             </button>
           </div>
         </div>
-        <div className="h-full border-2 border-black w-1/2"></div>
+        <div className="h-full border-2 border-black w-1/2 overflow-hidden">
+          <img src="../public/fan.jpg" alt=""/>
+        </div>
       </div>
       <div className="gap-12 flex flex-col">
-        <MovieHolder title={"Trending Movies"} movies={movies} />
+        <MovieHolder title={"Trending Movies"} url={url} options={options} />
         <MovieHolder title={"Top Rated"} movies={movies} />
         <MovieHolder title={"Liked Movies"} movies={movies} />
       </div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import MovieHolder from '../components/MovieHolder'
 function Discover() {
   const genre=['Action', 'Comedy', 'Thriller', 'SciFi', 'Drama','Comedy', 'Thriller', 'SciFi', 'Drama',]
@@ -54,6 +54,16 @@ function Discover() {
     },
   ];
   const [title,setTitle]=useState('Action')
+
+  const [movies, setMovies]=useState({})
+  useEffect(()=>{
+    fetch('https://api.themoviedb.org/3/discover/movie?api_key=44ac81e55da40ee5b9c4b83c785597ec&with_genres=28',{
+      method: 'GET'
+    })
+    .then((res)=>res.json())
+    .then((res)=>console.log(res))
+    .catch(e=>console.log(e))
+  },[])
   return (
     <div className="min-h-screen  bg-main relative ">
       <div className=" h-52 absolute w-full z-0 flex items-center">
