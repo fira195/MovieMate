@@ -2,28 +2,43 @@ import { useNavigate } from "react-router-dom";
 import MovieHolder from "../components/MovieHolder";
 import { useEffect, useState } from "react";
 
-function Home() {
-  const movies = [
-    "Avatar (2003)",
-    "interstellar (2004)",
-    "interstellar (2004)",
-    "interstellar (2004)",
-    "interstellar (2004)",
-    "interstellar (2004)",
-    "interstellar (2004)",
-    "interstellar (2004)",
-  ];
+function Home() { 
+  const fetch=[
+    {
+      title: "Trending Movies", 
+      options: {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NGFjODFlNTVkYTQwZWU1YjljNGI4M2M3ODU1OTdlYyIsIm5iZiI6MTcyMjcwNzQwNS4wMjUxMzUsInN1YiI6IjY2YWUzMDc0ZDAwNmY3OTFmZjViNGRhMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bVpvqXGyOYlyCrX_N9EbFbFlbTrmq1NbvzZ5KZTvMMc'
+            }
+              },
+      url: 'https://api.themoviedb.org/3/movie/popular?language=en-US&page=1'
+    },
+    {
+      title: "Top Rated", 
+      options: {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NGFjODFlNTVkYTQwZWU1YjljNGI4M2M3ODU1OTdlYyIsIm5iZiI6MTcyMjcwNzQwNS4wMjUxMzUsInN1YiI6IjY2YWUzMDc0ZDAwNmY3OTFmZjViNGRhMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bVpvqXGyOYlyCrX_N9EbFbFlbTrmq1NbvzZ5KZTvMMc'
+            }
+              },
+      url: 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1'
+    },
+    {
+      title: "Liked Movies", 
+      options: {
+      method: 'GET',
+      headers: {
+        accept: 'application/json',
+        Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NGFjODFlNTVkYTQwZWU1YjljNGI4M2M3ODU1OTdlYyIsIm5iZiI6MTcyMjcwNzQwNS4wMjUxMzUsInN1YiI6IjY2YWUzMDc0ZDAwNmY3OTFmZjViNGRhMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bVpvqXGyOYlyCrX_N9EbFbFlbTrmq1NbvzZ5KZTvMMc'
+            }
+              },
+      url: 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1'
+    },
 
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: 'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NGFjODFlNTVkYTQwZWU1YjljNGI4M2M3ODU1OTdlYyIsIm5iZiI6MTcyMjcwNzQwNS4wMjUxMzUsInN1YiI6IjY2YWUzMDc0ZDAwNmY3OTFmZjViNGRhMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bVpvqXGyOYlyCrX_N9EbFbFlbTrmq1NbvzZ5KZTvMMc'
-    }
-  };
-  
-  const url = 'https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1'
-
+  ]
   const navigate = useNavigate();
 
   return (
@@ -58,9 +73,9 @@ function Home() {
         </div>
       </div>
       <div className="gap-12 flex flex-col">
-        <MovieHolder title={"Trending Movies"} url={url} options={options} />
-        <MovieHolder title={"Top Rated"} movies={movies} />
-        <MovieHolder title={"Liked Movies"} movies={movies} />
+        {
+          fetch.map((item, indx)=> <MovieHolder key={indx} {...item}/>)
+        }
       </div>
     </div>
   );

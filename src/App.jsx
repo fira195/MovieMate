@@ -10,6 +10,7 @@ import Movie from './pages/Movie';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { Toaster } from 'sonner';
+import Loading from './pages/helper';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
     <Header />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/help" element={<Loading />} />
         <Route path="/search" element={<Search />} />
         <Route path="/movie/:id" element={<Movie/>} />
         <Route path="/profile" element={<Profile />} />
