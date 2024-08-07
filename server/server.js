@@ -1,19 +1,11 @@
-import express from "express"
-import {login} from './controller/userAuth.js'
-import createUser from './controller/userAuth.js'
-import connectDB from "./config/config.js"
-import dotenv from 'dotenv'
-
+const express = require('express');
 const app = express();
-app.use(express.json())
-dotenv.config()
+const port = 3000;
 
-app.post("/create", createUser);
-app.post("/login", login);
+app.get('/', (req, res) => {
+  res.json({ message: 'entered' });
+});
 
-connectDB().then(() => {
-    const PORT = process.env.PORT || 3000;
-    app.listen(PORT, () => {
-      console.log(`Server is running on http://localhost:${PORT}`);
-    });
-  });
+app.listen(port, () => {
+  console.log(`Server is running at http://localhost:${port}`);
+});
