@@ -10,17 +10,17 @@ import Movie from './pages/Movie';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import { Toaster } from 'sonner';
-import Loading from './pages/helper';
+import GenreProvider from './components/GenreProvider';
 
 function App() {
   return (
     <BrowserRouter>
     <Toaster/>
+    <GenreProvider>
     <Header />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/help" element={<Loading />} />
-        <Route path="/search" element={<Search />} />
+        <Route path="/search/:query?" element={<Search />} />
         <Route path="/movie/:id" element={<Movie/>} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/collection" element={<Collection />} />
@@ -29,6 +29,7 @@ function App() {
         <Route path="/about" element={<About />} />
       </Routes>
       <Footer />
+      </GenreProvider>
     </BrowserRouter>
   );
 }

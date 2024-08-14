@@ -5,18 +5,11 @@ function Header() {
 
   //color chang when scroll
   const [color,setColor]=useState(false)
-  const Ref=useRef()
-  const navigate=useNavigate()
 
   const changeColor=()=>{
       if (window.scrollY>150) setColor(true)
       else setColor(false)
     }
-  /* const inputListenter=(e)=>{
-    if (e.key === 'Enter'){
-      navigate(`/search/${Ref.current.value}`)
-    }
-  } */
   useEffect(() => {
     window.addEventListener('scroll', changeColor);
     return () => {
@@ -30,10 +23,7 @@ function Header() {
       
       <div className={`size-7 rotate-45 rounded-sm ${!color ? "bg-accent" :"bg-accent"}`}></div>
       
-      <div className='flex gap-10 justify-end items-center w-1/2'>
-        
-{/*         <input ref={Ref} className='w-1/2 px-3 p-2 rounded-2xl border-2 border-red-300 outline-none' placeholder='Search Movie' type="text" />
- */}        
+      <div className='flex gap-10 justify-end items-center w-1/2'>        
         <nav>
           <ul className='flex gap-8 font-semibold items-center'>
             <li className='hover:border-b-2 border-accent'><Link to="/">Home</Link></li>
