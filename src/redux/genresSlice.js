@@ -6,7 +6,7 @@ export const fetchGenres = createAsyncThunk('genres/fetchGenres',  async (_, { g
       return genres;
     }
     // Delay the fetch by 5 seconds
-    await new Promise((resolve) => setTimeout(resolve, 5000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
   
     const response = await fetch('https://api.themoviedb.org/3/genre/movie/list?language=en-US', {
       headers: {

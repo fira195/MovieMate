@@ -11,6 +11,7 @@ import Header from './components/Header';
 import Footer from './components/Footer';
 import { Toaster } from 'sonner';
 import GenreProvider from './components/GenreProvider';
+import Loading from './pages/helper';
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
         <Route path="/discover" element={<Discover />} />
         <Route path="/landing" element={<Landing />} />
         <Route path="/about" element={<About />} />
+        <Route path="/help" element={<Loading />} />
       </Routes>
       <Footer />
       </GenreProvider>

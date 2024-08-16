@@ -1,24 +1,25 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: [
-    "./index.html",
-    "./src/**/*.{js,ts,jsx,tsx}",
-  ],
+  content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
       colors: {
-        'main': '#E69616',
-        'accent': '#005248',
-        'thrid': '#DFE0DF'
+        main: "#E69616",
+        accent: "#005248",
+        thrid: "#DFE0DF",
       },
       backgroundImage: {
-        'gradient': 'linear-gradient(to top, #005248 , #E69616)',
-        'gradient-2': 'radial-gradient(circle, #005248, #216b43, #57822f, #999111, #e69616);',
+        gradient: "linear-gradient(to top, #005248 , #E69616)",
+        "gradient-2":
+          "radial-gradient(circle, #005248, #216b43, #57822f, #999111, #e69616);",
+      },
+      boxShadow: {
+        "my": "0 0px 5px 10px #005248",
       },
     },
   },
   plugins: [],
-}
+};
 /* colors: {
         'main': '#E69616',
         'accent': '#005248',

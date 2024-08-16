@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { btnClassName } from "../utils/css";
 
 function FeaturesCard({ title, detail, action }) {
   return (
@@ -39,7 +40,6 @@ function Landing() {
     "../public/oppen.jpg",
   ];
   const [active, setActive] = useState(0);
-  const btnClass = `z-20 size-fit bg-accent text-thrid px-4 p-2 hover:shadow-2xl transition duration-200`;
   
   return (
 
@@ -55,7 +55,7 @@ function Landing() {
             favorites, and share your movie experiences with a vibrant community
             of film enthusiasts. Dive into the world of movies.
           </p>
-          <button className={btnClass}>Get Started</button>
+          <button className={btnClassName}>Get Started</button>
         </div>
         <div className="w-1/3 h-1/2 relative items-center flex flex-shrink-0 ">
           {imgs.map((item, index) => {
@@ -71,7 +71,7 @@ function Landing() {
             );
           })}
 
-          <button onClick={()=>setActive(prev=>prev>=2?0:prev+1)} className={btnClass + ' absolute z-10'}>{">"}</button>
+          <button onClick={()=>setActive(prev=>prev>=2?0:prev+1)} className={btnClassName + ' absolute z-10'}>{">"}</button>
         </div>
       </div>
 
@@ -91,7 +91,7 @@ function Landing() {
             <h1 className="font-bold text-3xl">Discover movies you'll love with personalized recommendations and engage with a vibrant community.</h1>
             <p className="">Our platform offers personalized movie recommendations tailored to your tastes, ensuring you find the perfect film for every mood. Join our community of movie enthusiasts and share your thoughts and reviews with like-minded individuals.</p>
             <div className="space-x-4">
-              <button className={btnClass + 'border-2 border-black'}>Get Started</button>
+              <button className={btnClassName + 'border-2 border-black'}>Get Started</button>
               <button className={'bg-main size-fit border-2 border-black px-4 p-2 hover:shadow-2xl transition duration-200'}>Learn More</button>
             </div>
           </div>

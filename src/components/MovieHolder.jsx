@@ -1,43 +1,46 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import MvieCard from "../components/MvieCard";
+import Loading, { Scroller } from "../pages/helper";
+import useFetchData from "../hooks/useFetch";
+import { btnClassName } from "../utils/css";
 
-function Loading() {
-  return <div>Loading...</div>;
-}
-
-function MovieHolder({ title, url, options }) {
-  const [movies, setMovies] = useState([]);
-  const [loading, setLoading] = useState(true);
+function MovieHolder({ title, url }) {
+  const { movies, loading, err, fetchData } = useFetchData(url);
 
   useEffect(() => {
-    setLoading(true);
-    fetch(url, options)
-      .then((res) => res.json())
-      .then((res) => {
-        setMovies(res.results);
-        console.log(res.results);
-      })
-      .catch((e) => console.log(e))
-      .finally(() => setLoading(false)); 
-  }, [url, options]); 
+    fetchData();
+  }, [url]);
 
+  const renderMovie = () => {
+    if (err) {
+      return (
+        <div className="m-auto text-center space-y-4">
+          <p>Couldn't Fetch Data</p>
+          <button className={btnClassName} onClick={fetchData}>
+            Retry
+          </button>
+        </div>
+      );
+    } else if (loading) {
+      return <Loading />;
+    } else if (movies)
+      return movies.length > 0 ? (
+        movies.map((item, indx) => <MvieCard key={indx} movie={item} />)
+      ) : (
+        <div>No movies found.</div>
+      );
+  };
+  const ref=useRef()
   return (
-    <div className="w-full">
+    <div  className="w-full relative p-4">
       <div className="flex gap-4 items-center font-semibold mb-6">
         <div className="bg-accent h-10 w-2 ml-2"></div>
         <h1 className="text-xl">{title}</h1>
       </div>
-      <div className="shadow-xl p-4 pl-6 w-full flex no-scrollbar gap-8 overflow-x-scroll">
-        {loading && movies? (
-          <Loading />
-        ) : movies.length > 0 ? (
-          movies.map((item,indx) => (
-            <MvieCard key={indx} movie={item} />
-          ))
-        ) : (
-          <div>No movies found.</div>
-        )}
-      </div>
+      <div ref={ref} className="shadow-xl  py-4   w-full flex no-scrollbar gap-8 overflow-x-scroll">
+        <Scroller  containerRef={ref}/>
+        {renderMovie()}
+     </div>
     </div>
   );
 }
