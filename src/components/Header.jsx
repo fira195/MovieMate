@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { btnClassName } from '../utils/css';
 
 function Header() {
 
@@ -19,9 +20,9 @@ function Header() {
 
 
   return (
-    <header className={`w-full fixed top-0 p-4 px-10 flex gap-4 justify-between transition duration-200 ${color && "bg-main shadow-md"} z-30`}>
+    <header className={`w-full fixed top-0 p-4 px-10 flex gap-4 justify-between items-center transition duration-200 ${color && "bg-main shadow-md"} z-30`}>
       
-      <div className={`size-7 rotate-45 rounded-sm ${!color ? "bg-accent" :"bg-accent"}`}></div>
+      <div className={`size-7 rotate-45 rounded-sm bg-accent`}></div>
       
       <div className='flex gap-10 justify-end items-center w-1/2'>        
         <nav>
@@ -30,7 +31,7 @@ function Header() {
             <li className='hover:border-b-2 border-accent'><Link to="/search">Search</Link></li>
             <li className='hover:border-b-2 border-accent'><Link to="/collection"> Collection</Link></li>
             <li className='hover:border-b-2 border-accent'><Link to="/discover">Discover</Link></li>
-            <li className={`bg-accent ${color && "text-thrid"} text-thrid p-2 px-3 rounded-md transition hover:scale-105 active:scale-95`}><Link to="/profile">Profile</Link></li>
+            <li className={btnClassName}><Link to="/profile">Profile</Link></li>
           </ul>
         </nav>
       </div>

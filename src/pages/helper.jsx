@@ -17,7 +17,7 @@ function Scroller({ containerRef }) {
     if (!canScroll) {
       setState({
         left: false, right: false
-      });
+      }); 
       return;
     }
 
@@ -37,35 +37,39 @@ function Scroller({ containerRef }) {
   const scrollLeft = () => {
     const container = containerRef.current;
     
-    container.scrollTo({
-      left: container.scrollLeft - container.clientWidth,
-      behavior: "smooth",
-    })
+    setTimeout(() => {
+      container.scrollTo({
+        left: container.scrollLeft - container.clientWidth,
+        behavior: "smooth",
+      })
+    }, 300);
   }
   const scrollRight=()=> {
      const container = containerRef.current;
+     setTimeout(() => {
       container.scrollTo({
         left: container.scrollLeft + container.clientWidth,
         behavior: "smooth",
-      });
+      })
+    }, 300);
     }
-
   return (
     <div>
       {state.right && (
         <div
           onClick={scrollRight}
-          className={`size-10 bg-thrid rounded-[50%] absolute right-0 z-10 top-1/2 -translate-y-full cursor-pointer font-bold text-accent items-center flex justify-center `}
+          className={`size-12 active:scale-90 transition duration-300 bg-thrid rounded-[50%] absolute right-0 z-10 top-1/2 -translate-y-full cursor-pointer font-bold text-accent items-center flex justify-center `}
         >
-          {')>'}
+          <img src="../public/arrow.png" alt="next" />
         </div>
       )}
       {state.left && (
         <div
           onClick={scrollLeft}
-          className={`size-10 bg-thrid rounded-[50%] absolute left-0 z-10 top-1/2 -translate-y-full cursor-pointer font-bold text-accent items-center flex justify-center `}
+          className={`size-12 active:scale-90 transition duration-300 bg-thrid rounded-[50%] absolute left-0 z-10 top-1/2 -translate-y-full cursor-pointer font-bold text-accent items-center flex justify-center `}
         >
-          {'<('}
+         <img className="rotate-180" src="../public/arrow.png" alt="next" />
+
         </div>
       )}
     </div>

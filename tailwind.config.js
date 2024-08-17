@@ -14,7 +14,7 @@ export default {
           "radial-gradient(circle, #005248, #216b43, #57822f, #999111, #e69616);",
       },
       boxShadow: {
-        "my": "0 0px 5px 10px #005248",
+        "my": "0 0px 2px 2px #005248",
       },
     },
   },

@@ -23,24 +23,24 @@ function MovieHolder({ title, url }) {
       );
     } else if (loading) {
       return <Loading />;
-    } else if (movies)
-      return movies.length > 0 ? (
-        movies.map((item, indx) => <MvieCard key={indx} movie={item} />)
-      ) : (
-        <div>No movies found.</div>
-      );
+    } else if (movies && movies.length > 0)
+      movies.map((item, indx) => <MvieCard key={indx} movie={item} />);
+    else return <div>No movies found.</div>;
   };
-  const ref=useRef()
+  const ref = useRef();
   return (
-    <div  className="w-full relative p-4">
+    <div className="w-full relative p-4">
       <div className="flex gap-4 items-center font-semibold mb-6">
         <div className="bg-accent h-10 w-2 ml-2"></div>
         <h1 className="text-xl">{title}</h1>
       </div>
-      <div ref={ref} className="shadow-xl  py-4   w-full flex no-scrollbar gap-8 overflow-x-scroll">
-        <Scroller  containerRef={ref}/>
+      <div
+        ref={ref}
+        className="shadow-xl  py-4   w-full flex no-scrollbar gap-8 overflow-x-scroll"
+      >
+        {movies && <Scroller containerRef={ref} />}
         {renderMovie()}
-     </div>
+      </div>
     </div>
   );
 }
