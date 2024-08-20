@@ -24,7 +24,7 @@ function MovieHolder({ title, url }) {
     } else if (loading) {
       return <Loading />;
     } else if (movies && movies.length > 0)
-      movies.map((item, indx) => <MvieCard key={indx} movie={item} />);
+     return movies.map((item, indx) => <MvieCard key={indx} movie={item} />);
     else return <div>No movies found.</div>;
   };
   const ref = useRef();
@@ -36,7 +36,7 @@ function MovieHolder({ title, url }) {
       </div>
       <div
         ref={ref}
-        className="shadow-xl  py-4   w-full flex no-scrollbar gap-8 overflow-x-scroll"
+        className="shadow-xl py-4 w-full flex no-scrollbar gap-8 overflow-x-scroll"
       >
         {movies && <Scroller containerRef={ref} />}
         {renderMovie()}
