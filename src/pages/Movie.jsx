@@ -19,7 +19,7 @@ function Rating() {
   };
 
   return (
-    <div className="flex gap-4 justify-center">
+    <div className="flex  gap-4 justify-center">
       {Array.from({ length: totalStars }, (_, index) => (
         <div
           key={index}
@@ -48,7 +48,7 @@ function BasicMovieInfo({ movie, reviewRef }) {
     reviewRef.current.scrollIntoView({ behavior: "smooth" });
   };
   return (
-    <div className="flex gap-10 border-2 border-accent relative items-center">
+    <div className="flex flex-col md:flex-row gap-10 border-2 border-accent relative items-center">
       {/* backGround */}
       {
         movie.movie && <div
@@ -60,7 +60,7 @@ function BasicMovieInfo({ movie, reviewRef }) {
       }
 
       {/* poster */}
-      <div className="flex flex-col z-10 gap-4 pb-4 items-center relative">
+      <div className="flex flex-col  z-10 gap-4 pb-4 items-center relative">
         <div className="absolute inset-0 bg-main bg-opacity-70 -z-10 h-full"></div>
         <PosterImage src={movie.Poster} alt={movie.Title} width={"w-[250px]"} />
 
@@ -92,7 +92,7 @@ function BasicMovieInfo({ movie, reviewRef }) {
             <p key={index}>{item}</p>
           ))}
         </div>
-        <div className="flex   w-fit justify-center gap-4 items-center">
+        <div className="flex flex-col md:flex-row  w-fit justify-center gap-4 md:items-center">
           <Rating />
           <button
             onClick={scrollToReview}
@@ -224,7 +224,7 @@ function SimilarMovies({ similarMovies }) {
         <div className="bg-accent h-10 w-2 ml-2"></div>
         <h1 className="text-xl">Similar</h1>
       </div>
-      <div className="border-2 border-black w-full flex flex-wrap gap-6 p-4">
+      <div className="border-2 border-black flex flex-wrap gap-6 md:p-4 p-0 justify-evenly">
         {similarMovies ? (
           similarMovies.results.map((item, key) => (
             <MovieCard key={key} movie={item} />
@@ -243,7 +243,7 @@ function Body({ movie, actions }) {
       <BasicMovieInfo movie={movie} reviewRef={ref} />
 
       {/* PLOT */}
-      <div className="shadow-xl p-3">
+      <div className="shadow-xl md:p-3">
         <div className="flex gap-4 items-center font-semibold mb-6">
           <div className="bg-accent h-10 w-2 ml-2"></div>
           <h1 className="text-xl">Plot</h1>
@@ -341,7 +341,7 @@ function Movie() {
   }, [id, navigate]);
 
   return (
-    <div className="bg-main pt-28 px-20">
+    <div className="bg-main pt-20 p-5 md:px-20">
       <Body key={movie.imdb_id} movie={movie} actions={actions} />
     </div>
   );

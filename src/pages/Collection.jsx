@@ -2,31 +2,27 @@ import { useEffect, useState } from "react";
 import SmallMovieCard from "../components/SmallMovieCard";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-import { useFormik } from 'formik';
-import * as Yup from 'yup';
+import { useFormik } from "formik";
+import * as Yup from "yup";
+import useDrag from "../hooks/useDrag";
 
-
-
-function EditCard({playlist_name}) {
+function EditCard({ playlist_name }) {
   const formik = useFormik({
     initialValues: {
-      playlistName: '',
-      playlistDetails: '',
+      playlistName: "",
+      playlistDetails: "",
     },
     validationSchema: Yup.object({
-      playlistName: Yup.string()
-        .required('Playlist Name is required'),
-      playlistDetails: Yup.string()
-        .required('Playlist Details are required'),
+      playlistName: Yup.string().required("Playlist Name is required"),
+      playlistDetails: Yup.string().required("Playlist Details are required"),
     }),
-    onSubmit: values => {
-      toast.success('Playlist Updated')
-      console.log('Form values:', values);
+    onSubmit: (values) => {
+      toast.success("Playlist Updated");
+      console.log("Form values:", values);
     },
   });
-
   return (
-    <div className="border-2 border-black  flex flex-col p py-10 p-4 gap-4 mt-6 w-fit">
+    <div className="border-2 top-0  border-black z-30 absolute bg-main flex flex-col p py-10 p-4 gap-4 mt-6 w-fit">
       <form onSubmit={formik.handleSubmit}>
         <div className="flex flex-col gap-4">
           <input
@@ -64,7 +60,7 @@ function EditCard({playlist_name}) {
             </button>
             <button
               type="button"
-              onClick={()=>toast.success(`${playlist_name} deleted`)}
+              onClick={() => toast.success(`${playlist_name} deleted`)}
               className="rounded-md transition-all duration-300 hover:scale-105 active:scale-95 px-4 p-2  border-2 border-black"
             >
               Delete
@@ -75,7 +71,6 @@ function EditCard({playlist_name}) {
     </div>
   );
 }
-
 
 //expand
 
@@ -89,10 +84,10 @@ function PlaylistCard({ playlist }) {
       onClick={(e) => {
         if (e.target.classList.contains("expand")) setExpand((prev) => !prev);
       }}
-      className={`expand relative border-2 border-black p-6 py-10 cursor-pointer hover:scale-[101%] transition-transform ease-in-out max-w-[100%] ${
-        expand ? "w-[1000px]" : "w-[40%]"
+      className={`expand relative border-2 border-black p-6 py-10 cursor-pointer hover:scale-[101%] transition-transform ease-in-out w-full  ${
+        expand ? "h-80 mb-20  " : "h-40"
       }`}
-      style={{ transition: "width 0.9s ease-in-out" }}
+      style={{ transition: "height 0.2s ease-in-out" }}
     >
       <div className="expand gap-4 items-center">
         <h1 className="expand font-semibold mb-2 text-xl">
@@ -109,17 +104,26 @@ function PlaylistCard({ playlist }) {
           </p>
         </div>
       </div>
+      {expand && (
+        <div className="flex justify-end align-top my-4">
+          <button
+            onClick={() => setCardView((prev) => !prev)}
+            className={`rounded-lg z-20 hover:scale-105 transition-all duration-200 text-thrid font-bold px-4 p-2 bg-accent`}
+          >
+            Edit
+          </button>
+        </div>
+      )}
       <div
-        className={`expand flex gap-4 overflow-scroll no-scrollbar transition-all duration-500 ease-in-out ${
-          expand ? "flex-wrap" : ""
-        }`}
+        className={`expand flex gap-4 overflow-scroll no-scrollbar transition-all duration-500 ease-in-out`}
       >
         {playlist.movies &&
+          expand &&
           playlist.movies.map((item, indx) => (
             <div
               key={indx}
               onClick={(indx) => navigate(`/movie/${indx}`)}
-              className="w-40 h-40 flex flex-shrink-0 p-4  justify-end items-end group bg-gray-700"
+              className="w-52 h-60 flex flex-shrink-0 p-4  justify-end items-end group bg-gray-700"
             >
               <div
                 onClick={(e) => {
@@ -133,25 +137,17 @@ function PlaylistCard({ playlist }) {
             </div>
           ))}
       </div>
-      {expand && (
-        <button
-          onClick={() => setCardView((prev) => !prev)}
-          className={`rounded-lg hover:scale-105 transition-all duration-200 text-thrid absolute font-bold ${
-            playlist.movies < 2 ? "right-10" : "right-3"
-          } top-10 px-4 p-2 bg-accent  `}
-        >
-          Edit
-        </button>
+
+      {expand && cardView && (
+        <EditCard playlist_name={playlist.playlist_name} />
       )}
-      {expand && cardView && <EditCard playlist_name={playlist.playlist_name}/>}
     </div>
   );
 }
 
-
-function Body1({ playlist }) {
+function PlaylistBody({ playlist }) {
   return (
-    <div className="mx-20 flex gap-10 flex-wrap">
+    <div className="flex gap-10 flex-wrap">
       {playlist.map((item, key) => {
         return <PlaylistCard key={key} playlist={item} />;
       })}
@@ -363,7 +359,7 @@ function Collection() {
       title: `YOU WANT TO SEE ${movies.length} FILMS`,
     },
     {
-      tab: "My Playlist",
+      tab: "Playlist",
       title: `YOU have TO SEE ${movies.length} playlists`,
     },
     {
@@ -388,17 +384,17 @@ function Collection() {
   }
 
   return (
-    <div className="min-h-screen bg-main relative ">
-      <div className="bg-main h-52 absolute w-full z-0 flex items-center">
+    <div className="min-h-screen sm:px-20 bg-main px-10">
+      <div className="bg-gray-500 h-52 absolute inset-0 w-full z-0 flex items-center">
         <p className="font-bold text-2xl ml-16">My Collection</p>
       </div>
-      <div className="relative z-10 flex gap-8 text-center justify-center pt-56">
+      <div className="relative overflow-scroll no-scrollbar z-20 md:text-base text-sm flex md:gap-8 text-center mx-auto md:w-fit pt-56">
         {tabs.map((item, index) => {
           return (
             <div
               key={index}
               onClick={() => tabManager(index)}
-              className={`hover:bg-accent hover:text-thrid p-2 px-4 cursor-pointer  font-semibold  border-accent ${
+              className={`hover:bg-accent hover:text-thrid p-2 px-4 cursor-pointer font-semibold  border-accent ${
                 active === index && "border-b-2"
               }`}
             >
@@ -407,12 +403,12 @@ function Collection() {
           );
         })}
       </div>
-      <div className="flex gap-4 items-center font-semibold my-6 m-4 ">
+      <div className="flex gap-4 items-center font-semibold my-6">
         <div className="bg-accent h-10 w-2 ml-2"></div>
         <h1 className=" text-xl">{tabs[active].title}</h1>
       </div>
-      {tabs[active].tab === "My Playlist" ? (
-        <Body1 playlist={playlist} />
+      {tabs[active].tab === "Playlist" ? (
+        <PlaylistBody playlist={playlist} />
       ) : (
         <Body movies={movies} />
       )}

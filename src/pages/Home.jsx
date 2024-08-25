@@ -29,15 +29,15 @@ function Home() {
 
 
   return (
-    <div className="bg-main h-auto p-6">
-      <div className=" w-full h-[40rem] flex gap-40 pr-0 pb-20 p-40 font-semibold">
-        <div className=" mt-20">
-          <h1 className="font-bold text-4xl  mb-10">Welcome Back, [User]</h1>
+    <div className="bg-main h-auto px-10 md:px-20 pt-20">
+      <div className="grid lg:grid-cols-12 md:grid-cols-8 sm:grid-cols-4 font-semibold items-center">
+        <div className="mt-20 lg:col-span-6 col-span-4">
+          <h1 className="font-bold md:text-4xl text-3xl mb-10">Welcome Back, [User]</h1>
           <input
             value={formik.values.searchQuery}
             onChange={formik.handleChange}
             name="searchQuery"
-            className="w-full px-4 p-3 font-normal bg-main border-2 border-black outline-none mb-4"
+            className="w-3/4 px-4 p-3 font-normal bg-main border-2 border-black outline-none mb-4"
             placeholder=""
             type="text"
           />
@@ -56,11 +56,11 @@ function Home() {
             </button>
           </div>
         </div>
-        <div className="h-full border-2 border-black w-1/2 overflow-hidden">
+        <div className="borde-2 hidden lg:inline lg:col-span-6 md:col-span-4 md:inline border-black w-fit">
           <img src="/fan.jpg" alt="" />
         </div>
       </div>
-      <div className="gap-12 flex flex-col">
+      <div className="gap-12 mt-10 flex flex-col">
         {data.map((item, indx) => (
           <MovieHolder key={indx} {...item} />
         ))}

@@ -28,10 +28,36 @@ function Footer() {
         </nav>
       </div>
 
-      <div className="grid grid-cols-3 gap-8 items-center">
-        <div className="bg-accent border-2 border-main rounded-3xl cursor-pointer size-7"></div>
-        <div className="bg-accent border-2 border-main rounded-3xl cursor-pointer size-7"></div>
-        <div className="bg-accent border-2 border-main rounded-3xl cursor-pointer size-7"></div>
+      <div className="flex justify-center items-center gap-4 mt-6">
+        <a
+          href="https://www.linkedin.com/in/your-profile"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="/linkedin.png"
+            alt="LinkedIn"
+            className="size-10 hover:scale-105 transition"
+          />
+        </a>
+        <a
+          href="https://github.com/your-profile"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <img
+            src="/github.png"
+            alt="GitHub"
+            className="size-10 hover:scale-105 transition"
+          />
+        </a>
+        <a href="mailto:your-email@example.com">
+          <img
+            src="/gmail.png"
+            alt="Email"
+            className="size-10 hover:scale-105 transition"
+          />
+        </a>
       </div>
 
       <p className="absolute bottom-0 w-full text-center text-thrid text-xs">

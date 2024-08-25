@@ -3,6 +3,7 @@ import MovieHolder from "../components/MovieHolder";
 import * as Yup from "yup";
 import React, { useEffect, useRef, useState } from "react";
 import useDrag from "../hooks/useDrag";
+import { btnClassName2 } from "../utils/css";
 
 const btnClassName =
   "bg-accent  font-semibold w-fit transition-transform hover:scale-105 active:scale-90 text-thrid p-2 px-3 rounded-xl ";
@@ -25,7 +26,7 @@ function Accordion() {
   return (
     <div className="w-full mt-8 border-2 border-black">
       <h1
-        onClick={() => setOpen((prev) => !prev)}    
+        onClick={() => setOpen((prev) => !prev)}
         className="text-xl font-bold cursor-pointer p-4 border  2 border-black"
       >
         My Account
@@ -70,15 +71,15 @@ function EditUserCard({ containerRef }) {
     },
   });
   const { ref, position } = useDrag();
-  
+
   return (
     <form
       ref={ref}
       className="drag cursor-pointer z-30 border-2 border-black bg-main text-sm gap-6 flex p-8 pt-10 flex-col absolute justify-center left-1/2 translate- place-self-end"
-      style={{top: `${position.y}px`, left: `${position.x}px` }}
+      style={{ top: `${position.y}px`, left: `${position.x}px` }}
       onSubmit={formik.handleSubmit}
     >
-       <div className="relative ">
+      <div className="relative ">
         <label
           className="absolute bg-gray-200 rounded-sm px-2 left-3 -top-2  text-[0.7rem]"
           htmlFor="username"
@@ -117,7 +118,7 @@ function EditUserCard({ containerRef }) {
       </div>
       <button className={btnClassName} type="submit">
         Submit
-      </button> 
+      </button>
     </form>
   );
 }
@@ -137,30 +138,34 @@ function Profile() {
   ];
 
   return (
-    <div className=" bg-main relative">
-      <div className="bg-gradient-2 h-52 absolute w-full z-0"></div>
+    <div className=" bg-main px-20 relative">
+      <div className="bg-gray-500 h-52 inset-0 absolute w-full z-0"></div>
 
-      <div className="relative z-10 pt-36 flex ml-28">
-        <div className="rounded-[100%] bg-gray-900 w-44 h-44" ></div>
-        <div className="fle pt-20 ml-8">
+      <div className="relative z-10 pt-36 flex flex-col md:flex-row ">
+        <div className="rounded-[100%] bg-gray-200 border-2 size-40 md:m-0 m-auto "></div>
+        <div className="md:pt-20 text-center">
           <p className="font-bold text-xl mb-2">Username</p>
           <p>This is where the bio goes</p>
+          <button
+            onClick={() => setEditUser((prev) => !prev)}
+            className={`${btnClassName} h-fit mt-2`}
+          >
+            Edit
+          </button>
         </div>
-        <button
-          onClick={() => setEditUser((prev) => !prev)}
-          className={`${btnClassName} absolute right-20 top-60`}
-        >
-          Edit
-        </button>
       </div>
-        {editUser && <EditUserCard />}
+      {editUser && <EditUserCard />}
 
-      <div className="flex flex-col gap-8 mx-4 mt-8">
+      <div className="flex flex-col gap-8 mt-8">
         <MovieHolder title={"My Reviews"} movies={movies} />
         <MovieHolder title={"Watchlist"} movies={movies} />
         <MovieHolder title={"Watched"} movies={movies} />
       </div>
-      <Accordion />
+      <div className="w-full flex md:justify-evenly flex-col md:flex-row items-center gap-4 shadow-2xl border-accent border-2 p-4">
+        <button className={btnClassName}>Change Password</button>
+        <button className={btnClassName2}>Delete Account</button>
+        <button className={btnClassName}>Logout</button>
+      </div>
     </div>
   );
 }

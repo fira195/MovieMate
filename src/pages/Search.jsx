@@ -30,7 +30,7 @@ function SearchForm({ search, onSubmitSearch, loading }) {
       onChange={formik.handleChange}
       placeholder="Search Movie"
       type="text"
-      className="outline-none w-1/2 p-4 bg-thrid text-black"
+      className="outline-none w-full  md:w-1/2 p-4 bg-thrid text-black"
       disabled={loading}
     />
   );
@@ -59,14 +59,15 @@ function Search() {
 
   useEffect(() => {
     if (debouncedSearch && debouncedSearch.trim()) {
+ 
       fetchData()
       } 
   }, [search, currentPage]);
 
   
   return (
-    <div className={`bg-main relative ${!movies && "h-screen"}`}>
-      <div className="bg-main border-b-2 border-black h-52 absolute w-full z-0"></div>
+    <div className={`bg-main relative ${!movies && "h-screen"} p-10 md:px-20`}>
+      {/* <div className=" border-b-2 border-black h-52 absolute top-full z-0"></div> */}
 
       <div className="w-full text-center relative z-10 pt-44">
         <SearchForm search={search} onSubmitSearch={onSubmitSearch} loading={loading}/>
@@ -93,7 +94,7 @@ function Search() {
         </h1>
       ) : (
         movies && (
-          <div className="bg-main border-2 border-black h-auto relative w-[97%] gap-6 mx-4 p-6 pb-28 grid grid-cols-5">
+          <div className="border-2 border-black relative flex flex-wrap justify-evenly gap-6 py-4">
             {movies.map((item) => <MovieCard key={item.id} movie={item} />)}
             <Pagination
               currentPage={currentPage}

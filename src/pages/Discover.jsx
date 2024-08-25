@@ -50,8 +50,8 @@ function GenreComponent() {
     },
   };
   return (
-    <div className="pl-4">
-      <div className="relative z-10 pl-10 flex flex-wrap gap-8 pt-60 justify-start mb-10">
+    <div>
+      <div className="relative p-4 h-60 overflow-scroll no-scrollbar flex flex-wrap gap-8 justify-evenly mb-10 shadow-xl">
         {renderGenres()}
       </div>
       <MovieHolder {...data} options={options} />
@@ -81,8 +81,8 @@ function Discover() {
     },
   };
   return (
-    <div className="min-h-screen  bg-main relative ">
-      <div className=" h-52 absolute w-full z-0 flex items-center overflow-hidden">
+    <div className="min-h-screen bg-main relative p-10 md:px-20">
+      <div className=" h-52 absolute w-full inset-0 z-0 flex items-center overflow-hidden">
         <p className="font-bold text-2xl ml-16 z-10">Discover</p>
         <img
           src="https://image.tmdb.org/t/p/original/avedvodAZUcwqevBfm8p4G2NziQ.jpg"
@@ -90,6 +90,7 @@ function Discover() {
           alt=""
         />
       </div>
+      <div className="h-56"></div>
       <GenreComponent />
       <div className="pl-4 space-y-10 mt-10">
         {data.map((item, indx) => (

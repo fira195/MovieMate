@@ -2,11 +2,12 @@ import { useState, useEffect, useRef } from "react";
 
 function useDrag() {
   const [drag, setDrag] = useState(false);
-  const [position, setPosition] = useState({ x: 200, y: 100 });
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const [offset, setOffset] = useState({ x: 0, y: 0 });
   const ref = useRef();
-
+  
   useEffect(() => {
+ 
     const handleMouseDown = (e) => {
       if (e.target.classList.contains('drag')){
       setDrag(true);

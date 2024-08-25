@@ -45,17 +45,17 @@ function SmallMovieCard({ name, year, imbd, id, rotten_tomatoes }) {
   return (
     <div
       onClick={handleClick}
-      className="cursor-pointer hover:scale-[101%] transition-all duration-500 flex gap-4 items-center text-sm border-2 border-black p-2 relative mx-20"
+      className="flex-col sm:flex-row cursor-pointer hover:scale-[101%] transition-all duration-500 flex gap-4 items-center text-sm border-2 border-black p-2 relative mx-20"
     >
       <div className="w-20 h-20 bg-gray-600 flex-shrink-0"></div>
       <div className=" gap-4 items-center">
-        <h1 className="font-semibold mb-2 text-lg">
+        <h1 className="font-semibold mb-2 md:text-lg">
           {name} <span className="opacity-90 font-normal">({year})</span>
         </h1>
-        <p>IMBD: {imbd}</p>
-        <p>Rotten Tomatoes: {rotten_tomatoes}</p>
+        <p className="md:text-base text-xs hidden sm:block">IMBD: {imbd}</p>
+        <p className="md:text-base text-xs hidden sm:block">Rotten Tomatoes: {rotten_tomatoes}</p>
       </div>
-      <div className="flex gap-4 right-10 absolute">
+      <div className="hidden gap-4 right-10 absolute md:flex">
         <div
           onClick={(e) => actionBtns(e)}
           name="Liked"
