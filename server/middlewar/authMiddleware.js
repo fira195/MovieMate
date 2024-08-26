@@ -1,14 +1,19 @@
 import jwt from 'jsonwebtoken';
-import config from '../db.js';
 
 export const authenticate = (req, res, next) => {
-  const token = req.header('Authorization');
-  if (!token) return res.status(401).json({ msg: 'No token, authorization denied' });
+  // Get the token from the Authorization header
+  const authHeader = req.header('Authorization');
+  if (!authHeader) return res.status(401).json({ msg: 'No token, authorization denied' });
+
+  // Extract the token from the Authorization header
+  const accessToken = authHeader.split(' ')[1];
+  if (!accessToken) return res.status(401).json({ msg: 'Token not found' });
 
   try {
-    const decoded = jwt.verify(token, config.JWT_SECRET);
-    req.user = decoded;
-    next();
+    // Verify the token using the secret
+    const decoded = jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
+    req.user = decoded; // Attach the user information to the request object
+    next(); // Call the next middleware function
   } catch (err) {
     res.status(400).json({ msg: 'Token is not valid' });
   }

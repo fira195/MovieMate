@@ -58,6 +58,8 @@ function GenreComponent() {
     </div>
   );
 }
+
+
 function Discover() {
   const data = [
     {
