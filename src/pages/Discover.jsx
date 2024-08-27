@@ -9,9 +9,7 @@ function GenreComponent() {
 
   const data = {
     title: `${title.name}`,
-    url: `https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=${
-      Math.floor(Math.random() * 10) + 1
-    }&sort_by=popularity.desc&with_genres=${title.id}`,
+    url: `http://localhost:3000/api/movies/genre-movies/${title.id}`,
   };
   
   function renderGenres() {
@@ -40,21 +38,14 @@ function GenreComponent() {
       </div>
     ));
   }
+
   
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NGFjODFlNTVkYTQwZWU1YjljNGI4M2M3ODU1OTdlYyIsIm5iZiI6MTcyMjcwNzQwNS4wMjUxMzUsInN1YiI6IjY2YWUzMDc0ZDAwNmY3OTFmZjViNGRhMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bVpvqXGyOYlyCrX_N9EbFbFlbTrmq1NbvzZ5KZTvMMc",
-    },
-  };
   return (
     <div>
       <div className="relative p-4 h-60 overflow-scroll no-scrollbar flex flex-wrap gap-8 justify-evenly mb-10 shadow-xl">
         {renderGenres()}
       </div>
-      <MovieHolder {...data} options={options} />
+      <MovieHolder {...data} />
     </div>
   );
 }
@@ -64,24 +55,14 @@ function Discover() {
   const data = [
     {
       title: "Top Rated",
-      url: `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${
-        Math.floor(Math.random() * 10) + 1
-      }`,
+      url: `http://localhost:3000/api/movies/top-rated`,
     },
     {
       title: "Liked Movies",
-      url: "https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1",
+      url: "http://localhost:3000/api/movies/trending",
     },
   ];
-
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NGFjODFlNTVkYTQwZWU1YjljNGI4M2M3ODU1OTdlYyIsIm5iZiI6MTcyMjcwNzQwNS4wMjUxMzUsInN1YiI6IjY2YWUzMDc0ZDAwNmY3OTFmZjViNGRhMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bVpvqXGyOYlyCrX_N9EbFbFlbTrmq1NbvzZ5KZTvMMc",
-    },
-  };
+;
   return (
     <div className="min-h-screen bg-main relative p-10 md:px-20">
       <div className=" h-52 absolute w-full inset-0 z-0 flex items-center overflow-hidden">
@@ -96,7 +77,7 @@ function Discover() {
       <GenreComponent />
       <div className="pl-4 space-y-10 mt-10">
         {data.map((item, indx) => (
-          <MovieHolder key={indx} {...item} options={options} />
+          <MovieHolder key={indx} {...item}/>
         ))}
       </div>
     </div>

@@ -10,9 +10,7 @@ function useFetchData(url) {
     method: "GET",
     headers: {
       accept: "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NGFjODFlNTVkYTQwZWU1YjljNGI4M2M3ODU1OTdlYyIsIm5iZiI6MTcyMzU2NTA5Ni4yMjQyNDMsInN1YiI6IjY2YWUzMDc0ZDAwNmY3OTFmZjViNGRhMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.pEot7qb10waifXmVrOmyYjKllx7o4h52tcjtWredgzs",
-    },
+      'Content-Type': 'application/json'   },
   };
   const fetchData = () => {
       setLoading(true);

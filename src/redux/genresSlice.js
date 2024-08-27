@@ -8,11 +8,12 @@ export const fetchGenres = createAsyncThunk('genres/fetchGenres',  async (_, { g
     // Delay the fetch by 5 seconds
     await new Promise((resolve) => setTimeout(resolve, 1000));
   
-    const response = await fetch('https://api.themoviedb.org/3/genre/movie/list?language=en-US', {
+    const response = await fetch('http://localhost:3000/api/movies/genre', {
+      method:'GET',
       headers: {
         accept: 'application/json',
         Authorization:
-          'Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NGFjODFlNTVkYTQwZWU1YjljNGI4M2M3ODU1OTdlYyIsIm5iZiI6MTcyMjcwNzQwNS4wMjUxMzUsInN1YiI6IjY2YWUzMDc0ZDAwNmY3OTFmZjViNGRhMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bVpvqXGyOYlyCrX_N9EbFbFlbTrmq1NbvzZ5KZTvMMc',
+          `Bearer ${localStorage.getItem('accessToken')}`,
       },
     });
   

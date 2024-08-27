@@ -273,76 +273,30 @@ function Movie() {
     e.stopPropagation();
     toast.success("some action");
   };
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization:
-        "Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiI0NGFjODFlNTVkYTQwZWU1YjljNGI4M2M3ODU1OTdlYyIsIm5iZiI6MTcyMjcwNzQwNS4wMjUxMzUsInN1YiI6IjY2YWUzMDc0ZDAwNmY3OTFmZjViNGRhMyIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.bVpvqXGyOYlyCrX_N9EbFbFlbTrmq1NbvzZ5KZTvMMc",
-    },
-  };
-  const url = `https://api.themoviedb.org/3/movie/${id}`;
 
-  const ombd_options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-    },
-  };
+
+
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        //fetch imbd id from tmbd
-        const response = await fetch(url, options);
-        const movie = await response.json();
-
-        // Check if imdb_id exists before fetching from OMDb API
-        if (!movie.imdb_id) throw Error("Movie not found");
-        const ombdUrl = `http://www.omdbapi.com/?i=${
-          movie.imdb_id
-        }&apikey=${"90a5e067"}`;
-        const ombdResponse = await fetch(ombdUrl, ombd_options);
-        const ratings = await ombdResponse.json();
-
-        // Fetch credits from TMDb API
-        const creditUrl = `https://api.themoviedb.org/3/movie/${movie.id}/credits?language=en-US`;
-        const creditResponse = await fetch(creditUrl, options);
-        const credits = await creditResponse.json();
-
-        //Fetch similar movies from TBDb
-        const similarUrl = `https://api.themoviedb.org/3/movie/${movie.id}/recommendations?language=en-US&page=1`;
-        const similarResponse = await fetch(similarUrl, options);
-        const similarMovies = await similarResponse.json();
-
-        // Fetch video information from TMDb (assuming video link is in trailers)
-        const videosUrl = `https://api.themoviedb.org/3/movie/${movie.id}/videos?&language=en-US`;
-        const videosResponse = await fetch(videosUrl, options);
-        const videoData = await videosResponse.json();
-
-        // Extract YouTube video ID from the first trailer (optional)
-        let youtubeUrl = null;
-        if (videoData.results && videoData.results.length > 0) {
-          const trailer = videoData.results.find(
-            (video) => video.type === "Trailer" && video.site === "YouTube"
-          );
-          if (trailer) {
-            youtubeUrl = `https://www.youtube.com/embed/${trailer.key}`;
-          }
-        }
-
-        setMovie({ ...ratings, credits, youtubeUrl, similarMovies, movie }); // Combine data with credits and video URL
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
-
-    fetchData();
+    fetch(`http://localhost:3000/api/movies/movie/${id}`,{
+      headers:{
+        accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      method:'GET',
+    }).then(res=>{
+      if (!res.ok) throw Error(res.statusText)
+      return res.json()
+    })
+    .then(res=>{
+      console.log(res.data)
+      setMovie(res.data)})
+    .catch(e=>toast.error(e))
   }, [id, navigate]);
 
   return (
     <div className="bg-main pt-20 p-5 md:px-20">
-      <Body key={movie.imdb_id} movie={movie} actions={actions} />
+      {movie && <Body key={movie.imdb_id} movie={movie} actions={actions} />}
     </div>
   );
 }

@@ -12,6 +12,7 @@ import Footer from './components/Footer';
 import { Toaster } from 'sonner';
 import GenreProvider from './components/GenreProvider';
 import Loading from './pages/helper';
+import Login from './pages/Login';
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
         <Route path="/landing" element={<Landing />} />
         <Route path="/about" element={<About />} />
         <Route path="/help" element={<Loading />} />
+        <Route path="/login" element={<Login />} />
       </Routes>
       <Footer />
       </GenreProvider>

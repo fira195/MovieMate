@@ -7,15 +7,15 @@ function Home() {
   const data = [
     {
       title: "Trending Movies",
-      url: "https://api.themoviedb.org/3/movie/popular?language=en-US&page=1",
+      url: "http://localhost:3000/api/movies/trending",
     },
     {
       title: "Top Rated",
-      url: "https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1",
+      url: "http://localhost:3000/api/movies/top-rated",
     },
     {
       title: "Liked Movies",
-      url: "https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1",
+      url: "http://localhost:3000/api/movies/trending",
     },
   ];
 
