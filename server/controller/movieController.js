@@ -76,6 +76,28 @@ export const getDetail = async (req, res) => {
   }
 };
 
+export const searchMovie = async (req, res) => {
+  try {
+    const { searchTerm, currentPage } = req.params;
+    const response = await fetch(
+      `https://api.themoviedb.org/3/search/movie?&query=${searchTerm}&language=en-US&page=${currentPage}`,
+      {
+        headers: {
+          accept: "application/json",
+          Authorization: `Bearer ${process.env.TMBD_KEY}`,
+        }
+      }
+    );
+    if (!response.ok) throw Error("COuldnt Fetch Movies...");
+    const resJson=await response.json();
+    const movies = resJson.results;
+    let total_pages = resJson.total_pages;
+    res.status(200).json({data: { movies: movies, total_pages: total_pages }});
+  } catch (error) {
+    res.status(500).json({ message: "Server Error" });
+    console.error("Error fetching data:", error);
+  }
+};
 export const getTopRated = async (req, res) => {
   try {
     const response = await fetch(

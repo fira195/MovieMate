@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "./helper";
 import PosterImage from "../components/PosterImage";
+import useFetchData from "../hooks/useFetch";
 
 
 function Skeleton() {
@@ -273,30 +274,19 @@ function Movie() {
     e.stopPropagation();
     toast.success("some action");
   };
+  const link=`http://localhost:3000/api/movies/movie/${id}`
+  const {loading, err, response, fetchData}=useFetchData(link)
 
 
 
 
   useEffect(() => {
-    fetch(`http://localhost:3000/api/movies/movie/${id}`,{
-      headers:{
-        accept: 'application/json',
-        'Content-Type': 'application/json',
-      },
-      method:'GET',
-    }).then(res=>{
-      if (!res.ok) throw Error(res.statusText)
-      return res.json()
-    })
-    .then(res=>{
-      console.log(res.data)
-      setMovie(res.data)})
-    .catch(e=>toast.error(e))
+    fetchData()
   }, [id, navigate]);
 
   return (
     <div className="bg-main pt-20 p-5 md:px-20">
-      {movie && <Body key={movie.imdb_id} movie={movie} actions={actions} />}
+      {movie && <Body key={response.imdb_id} movie={response} actions={actions} />}
     </div>
   );
 }

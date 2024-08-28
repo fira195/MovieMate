@@ -110,8 +110,8 @@ function Pagination({ currentPage, resultPageNumber, setCurrentPage }) {
           key={item}
           onClick={() => setCurrentPage(item)}
           className={`${
-            currentPage === item && "bg-accent text-thrid"
-          } size-10 hover:bg-accent hover:text-thrid cursor-pointer border-black items-center flex place-content-center`}
+            currentPage === item ? "bg-accent text-thrid": 'bg-main text-accent'
+          } size-10 hover:bg-accent hover:text-thrid cursor-pointer border-2 border-accent items-center flex place-content-center`}
         >
           {item}
         </div>

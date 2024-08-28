@@ -4,8 +4,7 @@ import { toast } from "sonner";
 function useFetchData(url) {
   const [loading, setLoading] = useState(false);
   const [err, setErr] = useState(null);
-  const [movies, setMovies] = useState(null);
-  const [resultPageNumber, setResultPageNumber] = useState(0);
+  const [response, setResponse] = useState(null);
   const options = {
     method: "GET",
     headers: {
@@ -20,8 +19,8 @@ function useFetchData(url) {
           return res.json();
         })
         .then((res) => {
-          setMovies(res.results);
-          if (res.total_pages) setResultPageNumber(res.total_pages);
+          setResponse(res.data);
+          console.log(response)
           setLoading(false);
         })
         .catch((e) => {
@@ -31,6 +30,6 @@ function useFetchData(url) {
           setLoading(false);
         });
       }
-  return { loading, err, movies, resultPageNumber, fetchData };
+  return { loading, err, response, fetchData };
 }
 export default useFetchData;
