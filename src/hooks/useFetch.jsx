@@ -15,12 +15,12 @@ function useFetchData(url) {
       setLoading(true);
       fetch(url, options)
         .then((res) => {
+          console.log(res)
           if (!res.ok) throw Error("Couldn't Fetch Data...");
           return res.json();
         })
         .then((res) => {
           setResponse(res.data);
-          console.log(response)
           setLoading(false);
         })
         .catch((e) => {

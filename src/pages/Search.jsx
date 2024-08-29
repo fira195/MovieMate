@@ -1,5 +1,5 @@
 import { useFormik } from "formik";
-import MovieCard from "../components/MvieCard";
+import MovieCard from "../components/MovieCard";
 import { useEffect, useRef, useState } from "react";
 import Loading, { Pagination } from "./helper";
 import { useNavigate, useParams } from "react-router-dom";

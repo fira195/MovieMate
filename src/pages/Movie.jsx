@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import MovieCard from "../components/MvieCard";
+import MovieCard from "../components/MovieCard";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Loading from "./helper";
@@ -39,11 +39,11 @@ function Rating() {
 
 function BasicMovieInfo({ movie, reviewRef }) {
   const details = [
-    `IMBD: ${movie.imdbRating || "-"}`,
-    `Genre: ${movie.Genre || "-"}`,
-    `Director: ${movie.Director || "-"}`,
-    `Release Date: ${movie.Released || "-"}`,
-    `Runtime: ${movie.Runtime || "-"}`,
+    `IMBD: ${movie?.imdbRating || "-"}`,
+    `Genre: ${movie?.Genre || "-"}`,
+    `Director: ${movie?.Director || "-"}`,
+    `Release Date: ${movie?.Released || "-"}`,
+    `Runtime: ${movie?.Runtime || "-"}`,
   ];
   const scrollToReview = () => {
     reviewRef.current.scrollIntoView({ behavior: "smooth" });
@@ -286,7 +286,7 @@ function Movie() {
 
   return (
     <div className="bg-main pt-20 p-5 md:px-20">
-      {movie && <Body key={response.imdb_id} movie={response} actions={actions} />}
+      {response?.data && <Body key={response.data.imdb_id} movie={response.data} actions={actions} />}
     </div>
   );
 }

@@ -16,19 +16,21 @@ export const getDetail = async (req, res) => {
     },
   };
   const fetchDetailParts = async (uri, options) => {
-    const ombdResponse = await fetch(uri, options);
-    const ratings = await ombdResponse.json();
+    const response = await fetch(uri, options);
+    const ratings = await response.json();
     return ratings;
   };
   try {
     const { movieId } = req.params;
+    console.log('fetching')
     //fetch imbd id from tmbd
     const response = await fetch(
       `https://api.themoviedb.org/3/movie/${movieId}`,
       options
     );
     const movie = await response.json();
-
+    
+   
     // Check if imdb_id exists before fetching from OMDb API
     if (!movie.imdb_id) throw Error("Movie not found");
     const [credits, similarMovies, videoData, ratings] = await Promise.all([
@@ -53,7 +55,8 @@ export const getDetail = async (req, res) => {
         ombd_options
       ),
     ]);
-
+    
+   
     // Extract YouTube video ID from the first trailer (optional)
     const getTrailer = () => {
       let youtubeUrl = null;
@@ -67,6 +70,7 @@ export const getDetail = async (req, res) => {
         return youtubeUrl;
       }
     };
+   
     const youtubeUrl = getTrailer();
     res.status(200).json({
       data: { ...ratings, credits, youtubeUrl, similarMovies, movie },
@@ -112,7 +116,7 @@ export const getTopRated = async (req, res) => {
       }
     );
     const json = await response.json();
-    res.status(200).json(json);
+    res.status(200).json({data: json});
   } catch (e) {
     console.log(e);
     res.status(500).json({ message: "Server Error" });
@@ -131,7 +135,7 @@ export const getTreding = async (req, res) => {
       }
     );
     const json = await response.json();
-    res.status(200).json(json);
+    res.status(200).json({data: json});
   } catch (e) {
     console.log(e);
     res.status(500).json({ message: "Server Error" });
@@ -154,7 +158,7 @@ export const getGenreMovies = async (req, res) => {
       }
     );
     const json = await response.json();
-    res.status(200).json(json);
+    res.status(200).json({data: json});
   } catch (e) {
     console.log(e);
     res.status(500).json({ message: "Server Error" });

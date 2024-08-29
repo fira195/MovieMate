@@ -1,18 +1,23 @@
-import { useEffect, useRef, useState } from "react";
-import MvieCard from "../components/MvieCard";
+import { useEffect, useRef } from "react";
+import MvieCard from "./MovieCard";
 import Loading, { Scroller } from "../pages/helper";
 import useFetchData from "../hooks/useFetch";
 import { btnClassName } from "../utils/css";
 
 function MovieHolder({ title, url }) {
-  const { movies, loading, err, fetchData } = useFetchData(url);
+  const { response, loading, error, fetchData } = useFetchData(url);  
+  const containerRef = useRef();
 
   useEffect(() => {
     fetchData();
   }, [url]);
 
-  const renderMovie = () => {
-    if (err) {
+  const renderMovies = () => {
+    if (loading) {
+      return <Loading />;
+    }
+
+    if (error) {
       return (
         <div className="m-auto text-center space-y-4">
           <p>Couldn't Fetch Data</p>
@@ -21,13 +26,17 @@ function MovieHolder({ title, url }) {
           </button>
         </div>
       );
-    } else if (loading) {
-      return <Loading />;
-    } else if (movies && movies.length > 0)
-     return movies.map((item, indx) => <MvieCard key={indx} movie={item} />);
-    else return <div>No movies found.</div>;
+    }
+
+    if (response?.results?.length > 0) {
+      return response.results.map((movie, index) => (
+        <MvieCard key={movie.id} movie={movie} />
+      ));
+    }
+
+    return <div>No movies found.</div>;
   };
-  const ref = useRef();
+
   return (
     <div className="w-full relative p-4">
       <div className="flex gap-4 items-center font-semibold mb-6">
@@ -35,11 +44,11 @@ function MovieHolder({ title, url }) {
         <h1 className="text-xl">{title}</h1>
       </div>
       <div
-        ref={ref}
+        ref={containerRef}
         className="shadow-xl py-4 w-full flex no-scrollbar gap-8 overflow-x-scroll"
       >
-        {movies && <Scroller containerRef={ref} />}
-        {renderMovie()}
+        {response?.results && <Scroller containerRef={containerRef} />}
+        {renderMovies()}
       </div>
     </div>
   );
