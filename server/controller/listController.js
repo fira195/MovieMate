@@ -167,6 +167,7 @@ export const getList = async (req, res, routeList) => {
     }
 
     const list = user[routeList];
+
     const movies=[]
      await Promise.all(
       list.map(async (movieId) => {
@@ -174,8 +175,7 @@ export const getList = async (req, res, routeList) => {
         movies.push(movie)
       })
     );
-
-    res.status(200).json({ data: movies });
+    res.status(200).json({ data: {results: movies} });
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });
@@ -190,20 +190,20 @@ export const addToList = async (req, res, routeList) => {
     console.log(movie)
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({data:{ message: "User not found" }});
     }
 
     const movieStored = await persistMovie(movie);
     if (!movieStored) throw new Error('Couldn\'t persist movie');
 
-    if (user[routeList].includes(movie.tmbdId)) return res.status(203).json({message: 'Already Added'})
+    if (user[routeList].includes(movie.tmbdId)) return res.status(203).json({data:{message: 'Already Added'}})
     user[routeList].push(movie.tmbdId);
     await user.save();
 
-    res.status(201).json({ message: 'Successfully added to watchlist' });
+    res.status(201).json({data:{ message: 'Successfully added to watchlist' }});
   } catch (e) {
     console.error(e);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({data:{ message: "Server Error" }});
   }
 };
 // Function to update a user's watchlist (currently placeholder)
@@ -215,7 +215,7 @@ export const updateList = async (req, res, routeList) => {
     // Find the user by username
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({data:{ message: "User not found" }});
     }
 
     // Remove the movieId from the watchedMovies array
@@ -225,10 +225,10 @@ export const updateList = async (req, res, routeList) => {
     // Save the updated user document
     await user.save();
 
-    res.status(200).json({ message: "Movie removed from watched movies" });
+    res.status(200).json({data:{ message: "Movie removed from watched movies" }});
   } catch (e) {
     console.log(e);
-    res.status(500).json({ message: "Server error" });
+    res.status(500).json({data:{ message: "Server error" }});
   }
 };
 

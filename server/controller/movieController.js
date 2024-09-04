@@ -22,7 +22,7 @@ export const getDetail = async (req, res) => {
   };
   try {
     const { movieId } = req.params;
-    console.log('fetching')
+
     //fetch imbd id from tmbd
     const response = await fetch(
       `https://api.themoviedb.org/3/movie/${movieId}`,
@@ -73,7 +73,7 @@ export const getDetail = async (req, res) => {
    
     const youtubeUrl = getTrailer();
     res.status(200).json({
-      data: { ...ratings, credits, youtubeUrl, similarMovies, movie },
+      data: { ...ratings, credits, youtubeUrl, similarMovies, movie, tmbdId: movieId },
     }); // Combine data with credits and video URL
   } catch (error) {
     console.error("Error fetching data:", error);

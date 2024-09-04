@@ -5,7 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import Loading from "./helper";
 import PosterImage from "../components/PosterImage";
 import useFetchData from "../hooks/useFetch";
-
+import { useSelector } from "react-redux";
+import MovieAction from "../components/MovieActions";
 
 function Skeleton() {
   return <div className="bg-gray-500 h-8 w-full skeleton-shimmer"></div>;
@@ -38,6 +39,7 @@ function Rating() {
 }
 
 function BasicMovieInfo({ movie, reviewRef }) {
+
   const details = [
     `IMBD: ${movie?.imdbRating || "-"}`,
     `Genre: ${movie?.Genre || "-"}`,
@@ -48,42 +50,38 @@ function BasicMovieInfo({ movie, reviewRef }) {
   const scrollToReview = () => {
     reviewRef.current.scrollIntoView({ behavior: "smooth" });
   };
+
+  
   return (
     <div className="flex flex-col md:flex-row gap-10 border-2 border-accent relative items-center">
       {/* backGround */}
-      {
-        movie.movie && <div
-        className="absolute inset-0 z-0 w-full h-full bg-cover bg-center blur-md"
-        style={{
-          backgroundImage: `url(https://image.tmdb.org/t/p/original/${movie.movie.backdrop_path})`,
-        }}
-      ></div>
-      }
+      {movie?.movie && (
+        <div
+          className="absolute inset-0 z-0 w-full h-full bg-cover bg-center blur-md"
+          style={{
+            backgroundImage: `url(https://image.tmdb.org/t/p/original/${movie?.movie?.backdrop_path})`,
+          }}
+        ></div>
+      )}
 
       {/* poster */}
       <div className="flex flex-col  z-10 gap-4 pb-4 items-center relative">
         <div className="absolute inset-0 bg-main bg-opacity-70 -z-10 h-full"></div>
-        <PosterImage src={movie.Poster} alt={movie.Title} width={"w-[250px]"} />
-
-        <div className="flex gap-4 duration-200">
-          {[1, 2, 3].map((_, index) => (
-            <button
-              key={index}
-              onClick={(e) => actions(e)}
-              className="hover:-rotate-12 active:scale-90 transition duration-300 rounded-md border-2 border-black w-7 h-7 hover:scale-105"
-              aria-label={`Action ${index + 1}`}
-            ></button>
-          ))}
-        </div>
+        <PosterImage
+          src={movie?.Poster}
+          alt={movie?.Title}
+          width={"w-[250px]"}
+        />
+          <MovieAction movie={movie}/>
       </div>
 
       {/* Details */}
       <div className="z-10 relative p-4 h-fit space-y-4">
         <div className="absolute inset-0 bg-main bg-opacity-70 -z-10 h-full"></div>
-        {movie.Title ? (
+        {movie?.Title ? (
           <h1 className="font-bold text-xl my-6">
-            {movie.Title}{" "}
-            <span className="text-accent">({movie.Year && movie.Year})</span>
+            {movie?.Title}{" "}
+            <span className="text-accent">({movie?.Year && movie?.Year})</span>
           </h1>
         ) : (
           <Skeleton />
@@ -249,18 +247,18 @@ function Body({ movie, actions }) {
           <div className="bg-accent h-10 w-2 ml-2"></div>
           <h1 className="text-xl">Plot</h1>
         </div>
-        {movie.Plot ? <p>{movie.Plot}</p> : <Skeleton />}
+        {movie?.Plot ? <p>{movie.Plot}</p> : <Skeleton />}
       </div>
 
-      <Trailer youtubeUrl={movie.youtubeUrl} />
+      <Trailer youtubeUrl={movie?.youtubeUrl} />
 
-      <Cast credits={movie.credits} />
+      <Cast credits={movie?.credits} />
 
       <div ref={ref}>
         <Review />
       </div>
 
-      <SimilarMovies similarMovies={movie.similarMovies} />
+      <SimilarMovies similarMovies={movie?.similarMovies} />
     </div>
   );
 }
@@ -270,23 +268,16 @@ function Movie() {
   const { id } = useParams();
   const [movie, setMovie] = useState({});
 
-  const actions = (e) => {
-    e.stopPropagation();
-    toast.success("some action");
-  };
-  const link=`http://localhost:3000/api/movies/movie/${id}`
-  const {loading, err, response, fetchData}=useFetchData(link)
-
-
-
+  const link = `http://localhost:3000/api/movies/movie/${id}`;
+  const { loading, err, response, fetchData } = useFetchData();
 
   useEffect(() => {
-    fetchData()
+    fetchData(link, "GET");
   }, [id, navigate]);
 
   return (
     <div className="bg-main pt-20 p-5 md:px-20">
-      {response?.data && <Body key={response.data.imdb_id} movie={response.data} actions={actions} />}
+      <Body key={response?.imdb_id} movie={response} />
     </div>
   );
 }

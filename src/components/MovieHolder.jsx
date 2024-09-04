@@ -5,11 +5,11 @@ import useFetchData from "../hooks/useFetch";
 import { btnClassName } from "../utils/css";
 
 function MovieHolder({ title, url }) {
-  const { response, loading, error, fetchData } = useFetchData(url);  
+  const { response, loading, error, fetchData } = useFetchData();  
   const containerRef = useRef();
 
   useEffect(() => {
-    fetchData();
+    fetchData(url, 'GET');
   }, [url]);
 
   const renderMovies = () => {

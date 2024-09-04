@@ -4,6 +4,12 @@ import * as Yup from "yup";
 import React, { useEffect, useRef, useState } from "react";
 import useDrag from "../hooks/useDrag";
 import { btnClassName2 } from "../utils/css";
+import { useDispatch, useSelector } from "react-redux";
+import useFetchData from "../hooks/useFetch";
+import { toast } from "sonner";
+import Loading from "./helper";
+import { login, logout } from "../redux/userSlice";
+import { useNavigate } from "react-router-dom";
 
 const btnClassName =
   "bg-accent  font-semibold w-fit transition-transform hover:scale-105 active:scale-90 text-thrid p-2 px-3 rounded-xl ";
@@ -52,22 +58,53 @@ function Accordion() {
   );
 }
 
-function EditUserCard({ containerRef }) {
+function EditUserCard() {
+  const user = useSelector((state) => state.user);
+  const { loading, err, response, fetchData } = useFetchData();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const formik = useFormik({
     initialValues: {
-      username: 12,
-      bio: "bio",
+      username: user.username || "",
+      bio: user.bio || "",
+      password: "",
     },
     validationSchema: Yup.object({
       username: Yup.string()
-        .min(3, "Username must be at least 3 characters long")
+        .min(1, "Username must be at least 1 characters long")
         .required("Username is required"),
-      bio: Yup.string()
-        .min(10, "Bio must be at least 10 characters long")
+      password: Yup.string()
+        .min(3, "Bio must be at least 3 characters long")
         .required("Bio is required"),
     }),
-    onSubmit: (values) => {
-      alert(JSON.stringify(values, null, 2));
+    onSubmit: async (values) => {
+      try {
+        await fetchData(
+          `http://localhost:3000/api/users/update/${user.username}`,
+          "POST",
+          values
+        );
+        if (response) {
+          await fetchData(
+            "http://localhost:3000/api/users/login",
+            "POST",
+            formik.values
+          );
+          if (response) {
+            dispatch(
+              login({
+                username: response.user.username,
+                bio: response.user.bio,
+              })
+            );
+            navigate("/profile");
+          }
+          toast.success(response?.message);
+        }
+      } catch (e) {
+        toast.error(e)
+        console.log(e);
+      }
     },
   });
   const { ref, position } = useDrag();
@@ -116,8 +153,27 @@ function EditUserCard({ containerRef }) {
           <div className="text-black cursor-text">{formik.errors.bio}</div>
         ) : null}
       </div>
+      <div className="relative ">
+        <label
+          className="absolute bg-gray-200 rounded-sm px-2 left-3 -top-2  text-[0.7rem]"
+          htmlFor="username"
+        >
+          Password
+        </label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          onChange={formik.handleChange}
+          value={formik.values.password}
+          className="w-full p-2 px-4 border-2 outline-none focus:border-red-200"
+        />
+        {formik.touched.password && formik.errors.password ? (
+          <div className="text-black cursor-text">{formik.errors.password}</div>
+        ) : null}
+      </div>
       <button className={btnClassName} type="submit">
-        Submit
+        {loading ? <Loading /> : "Submit"}
       </button>
     </form>
   );
@@ -126,17 +182,13 @@ function EditUserCard({ containerRef }) {
 function Profile() {
   const [editUser, setEditUser] = useState(false);
 
-  const movies = [
-    "Avatar (2003)",
-    "interstellar (2004)",
-    "interstellar (2004)",
-    "interstellar (2004)",
-    "interstellar (2004)",
-    "interstellar (2004)",
-    "interstellar (2004)",
-    "interstellar (2004)",
-  ];
-
+  const user = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const logoutFunc = () => {
+    dispatch(logout());
+    navigate("/");
+  };
   return (
     <div className=" bg-main px-20 relative">
       <div className="bg-gray-500 h-52 inset-0 absolute w-full z-0"></div>
@@ -144,8 +196,8 @@ function Profile() {
       <div className="relative z-10 pt-36 flex flex-col md:flex-row ">
         <div className="rounded-[100%] bg-gray-200 border-2 size-40 md:m-0 m-auto "></div>
         <div className="md:pt-20 text-center">
-          <p className="font-bold text-xl mb-2">Username</p>
-          <p>This is where the bio goes</p>
+          <p className="font-bold text-xl mb-2">{user?.username}</p>
+          <p>{user?.bio}</p>
           <button
             onClick={() => setEditUser((prev) => !prev)}
             className={`${btnClassName} h-fit mt-2`}
@@ -157,14 +209,25 @@ function Profile() {
       {editUser && <EditUserCard />}
 
       <div className="flex flex-col gap-8 mt-8">
-        <MovieHolder title={"My Reviews"} movies={movies} />
-        <MovieHolder title={"Watchlist"} movies={movies} />
-        <MovieHolder title={"Watched"} movies={movies} />
+        <MovieHolder
+          title={"My Reviews"}
+          url={`http://localhost:3000/api/lists/watchlist/${user.username}`}
+        />
+        <MovieHolder
+          title={"Watchlist"}
+          url={`http://localhost:3000/api/lists/watchlist/${user.username}`}
+        />
+        <MovieHolder
+          title={"Watched"}
+          url={`http://localhost:3000/api/lists/watchedMovies/${user.username}`}
+        />
       </div>
       <div className="w-full flex md:justify-evenly flex-col md:flex-row items-center gap-4 shadow-2xl border-accent border-2 p-4">
         <button className={btnClassName}>Change Password</button>
         <button className={btnClassName2}>Delete Account</button>
-        <button className={btnClassName}>Logout</button>
+        <button onClick={logoutFunc} className={btnClassName}>
+          Logout
+        </button>
       </div>
     </div>
   );

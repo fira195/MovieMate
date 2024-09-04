@@ -55,7 +55,6 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   const { username, password } = req.body;
 
-  console.log(req.body)
   try {
 
     const user = await User.findOne({ username });
@@ -68,9 +67,7 @@ export const login = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({ message: "Invalid credentials" });
     }
-
-
-    
+   
     const { refreshToken, accessToken } = generateTokens(user);
 
     res.cookie("refreshToken", refreshToken, {
@@ -78,24 +75,81 @@ export const login = async (req, res) => {
       secure: false,
       sameSite: "Strict",
     });
-    res.status(200).json({
+    res.status(200).json({data:{
       message: "Login successful",
       accessToken,
       user: {
         id: user._id,
         username: user.username,
+        bio: user.bio
       },
-    });
+    }});
   } catch (error) {
     console.log(error);
     res.status(500).json({ message: "Server error" });
   }
 };
 
+export const editProfile=async(req,res)=>{
+  try{
+    const {username}= req.params
+
+    const {username: newUsername, bio, password}=req.body
+    if (!username || !password) {
+      return res.status(400).json({ data: { message: "Missing required fields" } });
+    }
+    const user = await User.findOne({username})
+    if (!user) {
+      return res.status(400).json({data:{ message: "Invalid credentials" }});
+    }
+
+    
+    const isMatch = await bcrypt.compare(password, user.password);
+    if (!isMatch) {
+      return res.status(400).json({data:{ message: "Invalid credentials" }});
+    }
+    if (!newUsername && !bio) {
+      return res.status(400).json({ data: { message: "No fields to update provided" } });
+    }
+
+
+    if (newUsername) user.username= newUsername
+    if (bio) user.bio=bio
+
+    await user.save();
+
+    res.status(200).json({data:{
+      message: "User Update successful",
+      user: {
+        username: user.username,
+        bio: user.bio
+      },
+    }});
+  }catch(e){
+    console.log(e)
+    res.status(500).json({data: {message: 'Server Error'}})
+  }
+}
 export const profile = async (req, res) => {
   res.send("profile");
 };
 
+
+export const logout= (req, res) => {
+  try {
+    // Clear the refreshToken cookie
+    res.clearCookie("refreshToken", {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Strict",
+    });
+
+    res.status(200).json({data:{ message: "Logout successful" }});
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({data:{ message: "Server error" }});
+  }
+}
 
 export const refreshToken = async (req, res) => {
   try {
