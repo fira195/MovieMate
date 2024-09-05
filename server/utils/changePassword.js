@@ -19,11 +19,4 @@ export const sendEmail=(mailOptions)=>{
       console.log('Email sent: ' + info?.response);
     }
   })}
-
-
-var mailOptions = {
-  from: 'youremail@gmail.com',
-  to: 'myfriend@yahoo.com',
-  subject: 'Sending Email using Node.js',
-  text: 'That was easy!'
-};
+ 

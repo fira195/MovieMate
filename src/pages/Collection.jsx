@@ -5,12 +5,14 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import useDrag from "../hooks/useDrag";
+import useFetchData from "../hooks/useFetch";
+
 
 function EditCard({ playlist_name }) {
   const formik = useFormik({
     initialValues: {
       playlistName: "",
-      playlistDetails: "",
+      playlistDetails: "",x 
     },
     validationSchema: Yup.object({
       playlistName: Yup.string().required("Playlist Name is required"),
@@ -155,7 +157,28 @@ function PlaylistBody({ playlist }) {
   );
 }
 
-function Body({ movies }) {
+function Body() {
+  const {response, err, loading, fetchData}=useFetchData()
+  const [movies, setMovies]=useState([])
+
+  useEffect(() => {
+    const fetchMovies = async () => {
+      try {
+        await fetchData("http://localhost:3000/api/lists/watchlist/l", "get");
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchMovies(); // Call the async function
+  }, []); // Dependencies should include response and fetchData
+
+  useEffect(()=>{
+    console.log(response)
+    if (response) {
+      setMovies(response.results); // Set the movies after the response is ready
+    }
+  },[fetchData])
   return (
     <div>
       <div className="flex flex-col gap-6">

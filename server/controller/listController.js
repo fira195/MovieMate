@@ -182,7 +182,7 @@ export const getList = async (req, res, routeList) => {
   }
 };
 // Function to add a movie to the user's watchlist
-export const addToList = async (req, res, routeList) => {
+export const  addToList = async (req, res, routeList) => {
   try {
     const { username } = req.params;
     const movie=req.body
