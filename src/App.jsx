@@ -14,6 +14,8 @@ import GenreProvider from "./components/GenreProvider";
 import Loading from "./pages/helper";
 import Login from "./pages/Login";
 import PrivateRoutes from "./components/PrivateRoutes";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
 
 function App() {
   return (
@@ -28,6 +30,8 @@ function App() {
           <Route path="/discover" element={<Discover />} />
           <Route path="/landing" element={<Landing />} />
           <Route path="/about" element={<About />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/reset-password/:username/:token" element={<ResetPassword />} />
 
           <Route path="/login" element={<Login />} />
           <Route element={<PrivateRoutes />}>

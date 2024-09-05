@@ -3,7 +3,7 @@
   import * as Yup from "yup";
   import useFetchData from "../hooks/useFetch";
   import Loading from "./helper";
-  import { useLocation, useNavigate } from "react-router-dom";
+  import { Link, useLocation, useNavigate } from "react-router-dom";
   import { useDispatch, useSelector } from "react-redux";
   import { login } from "../redux/userSlice";
   import { toast } from "sonner";
@@ -61,7 +61,7 @@
       <div className="min-h-screen flex items-center justify-center bg-main">
         <div className="p-6 rounded-lg shadow-md w-full max-w-md border-2 border-black">
           <h2 className="text-2xl font-semibold text-center mb-6">Login</h2>
-          <form onSubmit={formik.handleSubmit} className="space-y-4">
+          <form onSubmit={formik.handleSubmit} className="space-y-4 ">
             <div>
               <label htmlFor="username" className="block text-sm font-medium">
                 Username
@@ -117,6 +117,7 @@
             >
               {loading ? <Loading /> : "Login"}
             </button>
+            <p className="text-sm"><Link to="/forgot-password">Forgot Password?</Link></p>
             {err && <div className="text-red-500 text-sm mt-1">{err}</div>}
           </form>
         </div>
