@@ -9,13 +9,14 @@ import movieModel from "../models/movieModel.js";
 export const createPlaylist = async (req, res) => {
   try {
     const { username } = req.params;
-    const { playlistName } = req.body;
+    const { name, description } = req.body;
 
     const user = await User.findOne({ username });
     if (!user) return res.status(404).json({ message: "User not found" });
 
     const newPlaylist = {
-      name: playlistName,
+      name,
+      description,
       movies: [],
     };
 
@@ -35,10 +36,10 @@ export const getPlaylists = async (req, res) => {
     const user = await User.findOne({ username });
     if (!user) return res.status(404).json({ message: "User not found" });
 
-    res.status(200).json({ playlists: user.playlists });
+    res.status(200).json({data:{ playlists: user.playlists }});
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({data:{ message: "Server Error" }});
   }
 };
 export const getPlaylist = async (req, res) => {
@@ -120,14 +121,15 @@ export const addToPlaylist = async (req, res) => {
     const movieStored = await persistMovie(movie);
     if (!movieStored) throw new Error('Couldn\'t persist movie');
       playlist.movies.push(movie.tmbdId);
+      if(playlist.highlights.length<3) playlist.highlights.push(movie.posterPath)
       await user.save();
-      res.status(200).json({ message: "Movie added to playlist", playlist });
+      res.status(200).json({data:{ message: "Movie added to playlist", playlist }});
     } else {
-      res.status(400).json({ message: "Movie already in playlist" });
+      res.status(400).json({data:{ message: "Movie already in playlist" }});
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({data:{ message: "Server Error" }});
   }
 };
 export const removeFromPlaylist = async (req, res) => {
@@ -224,7 +226,7 @@ export const updateList = async (req, res, routeList) => {
     });
     // Save the updated user document
     await user.save();
-
+    console.log(user[routeList])
     res.status(200).json({data:{ message: "Movie removed from watched movies" }});
   } catch (e) {
     console.log(e);

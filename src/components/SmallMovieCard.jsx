@@ -1,11 +1,11 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import Loading from '../pages/helper'
+import Loading from "../pages/helper";
 import useFetchData from "../hooks/useFetch";
 
-function SmallMovieCard({ title, releaseDate, id, ratings, posterPath }) {
-  const {response,err, loading,fetchData}=useFetchData()
+function SmallMovieCard({ title, releaseDate, tmbdId, ratings, posterPath, username, url, updataList }) {
+  const { response, err, loading, fetchData } = useFetchData();
   const navigate = useNavigate();
   const [playlistView, setPlaylistView] = useState(false);
 
@@ -40,24 +40,33 @@ function SmallMovieCard({ title, releaseDate, id, ratings, posterPath }) {
   ]);
 
   const handleClick = () => {
-    navigate(`/movie/${id}`);
+    navigate(`/movie/${tmbdId}`);
   };
-;
-  const handleRemoveFromList = async(e) => {
+  const handleRemoveFromList = async (e) => {
     e.stopPropagation();
-    await fetchData('http://localhost:3000/api/lists/watchlist/l', 'DELETE', {movieId: id})     
-    if (response) {toast.success(`${id} Removed from watchlist`)
-    navigate('/collection')};
+      fetchData(`http://localhost:3000/api/lists/${url}/${username}`, "DELETE", {
+      movieId: tmbdId,
+    });
   };
+
+  useEffect(() => {
+    if (response) {
+      updataList()
+      toast.success(response.message);
+    }
+  }, [response]);
+
   return (
     <div
       onClick={handleClick}
-      className="flex-col sm:flex-row cursor-pointer hover:scale-[101%] transition-all duration-500 flex gap-4 items-center text-sm border-2 border-black p-2 relative mx-20"
+      className="flex-col sm:flex-row cursor-pointer hover:scale-[101%] transition-all duration-500 flex gap-4 items-center text-sm border-2 border-black p-2 relative"
     >
       <div className="w-20 flex-shrink-0">
         {isImageLoading && <Loading />}
         {imageHasError ? (
-          <div className="w-20 bg-accent text-thrid text-center p-2">Error loading image</div>
+          <div className="w-20 bg-accent text-thrid text-center p-2">
+            Error loading image
+          </div>
         ) : (
           <img
             src={posterPath}
@@ -85,8 +94,10 @@ function SmallMovieCard({ title, releaseDate, id, ratings, posterPath }) {
         <div
           onClick={handleRemoveFromList}
           name="Liked"
-          className="w-8 h-8 bg-accent hover:-rotate-12 active:scale-90 rounded-lg transition-all duration-300"
-        ></div> 
+          className="w-6 hover:-rotate-90 active:scale-90 rounded-lg transition-all duration-300"
+        >
+          <img src="/delete.png" alt="" />{" "}
+        </div>
       </div>
       {playlistView && (
         <div className="bg-yellow-500 max-w-prose p-4 gap-2 flex flex-wrap">

@@ -7,7 +7,7 @@ const movieSchema = new mongoose.Schema({
   releaseDate:{type: Date},
   ratings:{
     imbdRating: {type: Number},
-    rottenTomatoes: {type: Number}
+    rottenTomatoes: {type: String}
   }
   // Add other movie properties as needed
 });

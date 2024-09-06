@@ -10,6 +10,8 @@ const userSchema = new mongoose.Schema({
   playlists: [{ 
     playlistId: mongoose.Schema.Types.ObjectId,
     name: {type: String},
+    description: {type: String},
+    highlights: [{type: String}],
     movies: [{ type: Number, ref: "Movie" }]
    }],
   reviews: [{

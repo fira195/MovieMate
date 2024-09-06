@@ -21,7 +21,7 @@ const createRouteHandler = (handler, routeList) => {
   router.post('/watchedMovies/:username', createRouteHandler(addToList, 'watchedMovies'));
   router.delete('/watchedMovies/:username', createRouteHandler(updateList, 'watchedMovies'));
 
-  router.post('/playlist/:username/create', createPlaylist)
+  router.post('/playlist/:username', createPlaylist)
   router.get('/playlist/:username', getPlaylists)
   router.get('/playlist/:username/:playlistID', getPlaylist)
   router.put('/playlist/:username/:playlistID', updatePlaylist) 
