@@ -6,80 +6,100 @@ import * as Yup from "yup";
 import { btnClassName, btnClassName2 } from "../utils/css";
 import { toast } from "sonner";
 import Loading from "../pages/helper";
+import { useSelector } from "react-redux";
 
-function EditCard({ playlist_name }) {
-    const formik = useFormik({
-      initialValues: {
-        playlistName: "",
-        playlistDetails: "",
-        x,
-      },
-      validationSchema: Yup.object({
-        playlistName: Yup.string().required("Playlist Name is required"),
-        playlistDetails: Yup.string().required("Playlist Details are required"),
-      }),
-      onSubmit: (values) => {
-        toast.success("Playlist Updated");
-        console.log("Form values:", values);
-      },
+function EditCard({ playlist, cardViewHandler, fetchPlaylists }) {
+  const { loading, response, error, fetchData } = useFetchData();
+  const user = useSelector((state) => state.user);
+  const formik = useFormik({
+    initialValues: {
+      name: `${playlist?.name || ""}`,
+      description: `${playlist?.description || ""}`,
+    },
+    validationSchema: Yup.object({
+      name: Yup.string().required("Playlist Name is required"),
+      description: Yup.string(),
+    }),
+    onSubmit: (values) => {
+      fetchData(
+        `http://localhost:3000/api/lists/playlist/${user.username}/${playlist._id}`,
+        "PUT",
+        values  
+      );
+    },
+  });
+  const deletePlaylist = () => {
+    fetchData(
+      `http://localhost:3000/api/lists/playlist/${user.username}/${playlist._id}`,
+      "DELETE"
+    ).then(() => {
+      fetchPlaylists();
+      cardViewHandler(); // Close the edit form
     });
-    return (
-      <div className="border-2 top-0  border-black z-30 absolute bg-main flex flex-col p py-10 p-4 gap-4 mt-6 w-fit">
-        <form onSubmit={formik.handleSubmit}>
-          <div className="flex flex-col gap-4">
-            <input
-              className={`rounded-lg px-4 p-2 outline-none border-2 `}
-              type="text"
-              placeholder="Playlist Name"
-              name="playlistName"
-              value={formik.values.playlistName}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.playlistName && formik.errors.playlistName ? (
-              <div className="text-black">{formik.errors.playlistName}</div>
-            ) : null}
+  };
   
-            <input
-              className={`rounded-lg px-4 p-2 outline-none border-2 `}
-              type="text"
-              placeholder="Playlist Details"
-              name="playlistDetails"
-              value={formik.values.playlistDetails}
-              onChange={formik.handleChange}
-              onBlur={formik.handleBlur}
-            />
-            {formik.touched.playlistDetails && formik.errors.playlistDetails ? (
-              <div className="text-black">{formik.errors.playlistDetails}</div>
-            ) : null}
-  
-            <div className="flex gap-4 font-semibold">
-              <button
-                type="submit"
-                className="rounded-md transition-all duration-300 hover:scale-105 active:scale-95 px-4 p-2 text-thrid bg-accent"
-              >
-                Edit
-              </button>
-              <button
-                type="button"
-                onClick={() => toast.success(`${playlist_name} deleted`)}
-                className="rounded-md transition-all duration-300 hover:scale-105 active:scale-95 px-4 p-2  border-2 border-black"
-              >
-                Delete
-              </button>
-            </div>
+  useEffect(() => {
+    if (response) {toast.success(response?.message)
+      cardViewHandler()
+      fetchPlaylists()
+    }
+  },[response]);
+  return (
+    <div className="border-2 top-0  border-black z-30 absolute bg-main flex flex-col p py-10 p-4 gap-4 mt-6 w-fit">
+      <form onSubmit={formik.handleSubmit}>
+        <div className="flex flex-col gap-4">
+          <input
+            className={`rounded-lg px-4 p-2 outline-none border-2 `}
+            type="text"
+            placeholder="Playlist Name"
+            name="name"
+            value={formik.values.name}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          {formik.touched.name && formik.errors.name ? (
+            <div className="text-black">{formik.errors.name}</div>
+          ) : null}
+
+          <input
+            className={`rounded-lg px-4 p-2 outline-none border-2 `}
+            type="text"
+            placeholder="Playlist Details"
+            name="description"
+            value={formik.values.description}
+            onChange={formik.handleChange}
+            onBlur={formik.handleBlur}
+          />
+          {formik.touched.description && formik.errors.description ? (
+            <div className="text-black">{formik.errors.description}</div>
+          ) : null}
+
+          <div className="flex gap-4 font-semibold">
+            <button
+              type="submit"
+              className="rounded-md transition-all duration-300 hover:scale-105 active:scale-95 px-4 p-2 text-thrid bg-accent"
+            >
+              {loading ? <Loading /> : "Update"}
+            </button>
+            <button 
+              type="button"
+              onClick={deletePlaylist}
+              className="rounded-md transition-all duration-300 hover:scale-105 active:scale-95 px-4 p-2  border-2 border-black"
+            >
+              {loading ? <Loading /> : "Delete"}
+            </button>
           </div>
-        </form>
-      </div>
-    );
-  }
+        </div>
+      </form>
+    </div>
+  );
+}
 
+function Skeleton() {
+  return <div className="bg-gray-500 w-full h-20 skeleton-shimmer"></div>;
+}
 
-  function Skeleton() {
-    return <div className="bg-gray-500 w-full h-20 skeleton-shimmer"></div>;
-  }
-
-function NameDescriptionCard({addPlaylistStateHandler, username}) {
+function NameDescriptionCard({ addPlaylistStateHandler, username }) {
   // Initialize Formik with validation
   const { response, err, loading, fetchData } = useFetchData();
 
@@ -99,21 +119,29 @@ function NameDescriptionCard({addPlaylistStateHandler, username}) {
     onSubmit: (values) => {
       // Handle form submission
       console.log(values);
-      fetchData(`http://localhost:3000/api/lists/playlist/${username}`, "POST", values);
+      fetchData(
+        `http://localhost:3000/api/lists/playlist/${username}`,
+        "POST",
+        values
+      );
     },
   });
 
-  useEffect(()=>{
-    if (response) toast.success(response.message)
-    addPlaylistStateHandler()
-  },[response])
+  useEffect(() => {
+    if (response) toast.success(response.message);
+    addPlaylistStateHandler();
+  }, [response]);
   return (
     <div className="bg-main shadow-xl absolute z-30  left-1/2 -translate-x-1/2 rounded-md p-6 w-1/3">
-      <h2 className="text-lg font-semibold mb-4">Playlist Name & Description</h2>
+      <h2 className="text-lg font-semibold mb-4">
+        Playlist Name & Description
+      </h2>
       <form onSubmit={formik.handleSubmit} className="flex flex-col gap-4">
         {/* Name Field */}
         <div className="flex flex-col">
-          <label htmlFor="name" className="mb-1">Name</label>
+          <label htmlFor="name" className="mb-1">
+            Name
+          </label>
           <input
             id="name"
             name="name"
@@ -132,7 +160,9 @@ function NameDescriptionCard({addPlaylistStateHandler, username}) {
 
         {/* Description Field */}
         <div className="flex flex-col">
-          <label htmlFor="description" className="mb-1">Description</label>
+          <label htmlFor="description" className="mb-1">
+            Description
+          </label>
           <textarea
             id="description"
             name="description"
@@ -154,145 +184,168 @@ function NameDescriptionCard({addPlaylistStateHandler, username}) {
 
         {/* Submit Button */}
         <div className="space-x-3">
-        <button
-          type="submit"
-          className={btnClassName}
-        >
-          {loading? <Loading/>:"Submit"}
-        </button>
-        <button
-            onClick={addPlaylistStateHandler}
-          className={btnClassName2}
-        >
-          Cancel
-        </button>
+          <button type="submit" className={btnClassName}>
+            {loading ? <Loading /> : "Submit"}
+          </button>
+          <button onClick={addPlaylistStateHandler} className={btnClassName2}>
+            Cancel
+          </button>
         </div>
       </form>
     </div>
   );
 }
 
+function PlaylistCard({ playlist, expand, expandHandler, cardView, cardViewHandler, fetchPlaylists }) {
+  const { response, error, fetchData, loading } = useFetchData();
+  const user=useSelector(state=>state.user)
 
-function PlaylistCard({ playlist }) {
-    const [expand, setExpand] = useState(false);
-    const [cardView, setCardView] = useState(false);
-    const navigate = useNavigate();
-  
-    return (
-      <div
-        onClick={(e) => {
-          if (e.target.classList.contains("expand")) setExpand((prev) => !prev);
-        }}
-        className={`expand relative border-2 border-black p-6 py-10 cursor-pointer hover:scale-[101%] transition-transform ease-in-out w-full  ${
-          expand ? "h-80 mb-20  " : "h-40"
-        }`}
-        style={{ transition: "height 0.2s ease-in-out" }}
-      >
-        <div className="expand gap-4 items-center">
-          <h1 className="expand font-semibold mb-2 text-xl">
-            {playlist?.name}
-          </h1>
-          <div className="expand leading-5 mb-4 text-sm">
-            <p className="expand">
-              <span className="expand font-semibold">Movies:</span>{" "}
-              {playlist?.movies?.length ? playlist?.movies?.length : 0}
-            </p>
-            <p className="expand">
-              <span className="expand font-semibold">Description:</span>{" "}
-              {playlist?.description}
-            </p>
-          </div>
-        </div>
-        {expand && (
-          <div className="flex justify-end align-top my-4">
-            <button
-              onClick={() => setCardView((prev) => !prev)}
-              className={`rounded-lg z-20 hover:scale-105 transition-all duration-200 text-thrid font-bold px-4 p-2 bg-accent`}
-            >
-              Edit
-            </button>
-          </div>
-        )}
-        <div
-          className={`expand flex gap-4 overflow-scroll no-scrollbar transition-all duration-500 ease-in-out`}
-        >
-          {playlist.movies &&
-            expand &&
-            playlist.movies.map((item, indx) => (
-              <div
-                key={indx}
-                onClick={(indx) => navigate(`/movie/${indx}`)}
-                className="w-52 h-60 flex flex-shrink-0 p-4  justify-end items-end group bg-gray-700"
-              >
-                <div
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    toast.success(
-                      `${indx} removed from ${playlist.playlist_name}`
-                    );
-                  }}
-                  className="w-8 h-8 transition-all duration-300 opacity-0 group-hover:opacity-100 bg-accent rounded-lg hover:-rotate-12 active:scale-90 "
-                ></div>
-              </div>
-            ))}
-        </div>
-  
-        {expand && cardView && (
-          <EditCard playlist_name={playlist.playlist_name} />
-        )}
-      </div>
-    );
+  const navigate = useNavigate();
+  const removeMovie=(e,movieId)=>{
+
+    e.stopPropagation();
+    fetchData(`http://localhost:3000/api/lists/playlist/${user.username}/${playlist._id}/${movieId}`, "DELETE");
   }
-  
-  
-function PlaylistBody({username }) {
-    const [playlist, setPlaylist]=useState([])
-    const [addPlaylistState, setAddPlaylistState]=useState(false)
-
-    const {response, error, loading, fetchData}=useFetchData()
-    useEffect(()=>{
-      fetchData(`http://localhost:3000/api/lists/playlist/${username}`, 'get')
-    },[])
-    useEffect(()=>{
-       if (response)
-        setPlaylist(response.playlists)
-    },[response])  
-    const addPlaylistStateHandler=()=>setAddPlaylistState(prev=>!prev)
-
-
-    const renderMovies=()=>{
-        if (loading)
-            return Array.from({ length: 5 }).map((item) => {
-              return <Skeleton />;
-            });
-          else if (error)
-            return (
-              <div className="font-bold text-center text-xl">
-                Coudn't Fetch Data Try Reloading the page
-              </div>
-            );
-          else if (playlist.length === 0)
-            return (
-              <div className="font-bold text-center text-xl">No Movies Found</div>
-            );
-        else{
-            return (playlist.map((item, key) => {
-                return <PlaylistCard key={key} playlist={item} />;
-              }))
-        }
+  useEffect(()=>{
+    if (response){
+      toast.success(response?.message)
+      fetchPlaylists()
     }
-    return (
-      <div className="flex gap-10 flex-col">
-        <div className="flex gap-4 items-center font-semibold my-6">
-          <div className="bg-accent h-10 w-2 ml-2"></div>
-          <h1 className=" text-xl">{`PLAYLISTS YOU HAVE: ${playlist.length}`}</h1>
+  })
+
+  const [imageError, setImageError]=useState(false)
+  return (
+    <div
+      onClick={(e) => {
+        if (e.target.classList.contains("expand")) expandHandler(playlist._id);
+      }}
+      className={`expand relative border-2 border-black p-6 py-10 cursor-pointer  transition-transform ease-in-out w-full  ${
+        expand===playlist._id ? "h-96 mb-44" : "h-40"
+      }`}
+      style={{ transition: "height 0.2s ease-in-out" }}
+    >
+      <div className="expand gap-4 items-center">
+        <h1 className="expand font-semibold mb-2 text-xl">{playlist?.name}</h1>
+        <div className="expand leading-5 mb-4 text-sm">
+          <p className="expand">
+            <span className="expand font-semibold">Movies:</span>{" "}
+            {playlist?.movies?.length ? playlist?.movies?.length : 0}
+          </p>
+          <p className="expand">
+            <span className="expand font-semibold">Description:</span>{" "}
+            {playlist?.description}
+          </p>
         </div>
-        <div className="flex justify-center"> <img src="/add.png" onClick={addPlaylistStateHandler} className="w-14 hover:rotate-90 active:scale-90 cursor-pointer transition-all duration-200" alt="" /> </div>
-        {addPlaylistState && <NameDescriptionCard addPlaylistStateHandler={addPlaylistStateHandler} username={username}/>}
-        {
-            renderMovies()
-        }
       </div>
-    );
+      {expand===playlist._id && (
+        <div className="flex justify-end align-top my-4">
+          <button
+            onClick={cardViewHandler}
+            className={`rounded-lg z-20 hover:scale-105 transition-all duration-200 text-thrid font-bold px-4 p-2 bg-accent`}
+          >
+            Edit
+          </button>
+        </div>
+      )}
+      <div
+        className={`expand flex gap-4 overflow-scroll no-scrollbar transition-all duration-500 ease-in-out`}
+      >
+        { 
+          expand===playlist._id &&
+          playlist?.movies?.map((movie, indx) => (
+            <div
+              key={movie.movieId}
+              onClick={() => navigate(`/movie/${movie.movieId}`)}
+              className=" lg:w-60 w-44 relative   flex-shrink-0 hover:scale-[101%] transition-all duration-200 group"
+            >
+              {imageError && <div className="h-44 w-full bg-accent"></div>}
+              <div
+                onClick={(e)=>removeMovie(e,movie.movieId)}
+                className="w-8 h-8 left-1/2 bottom-4 -translate-x-1/2 absolute opacity-0 transition-all duration-300 bg-main p-2 rounded-[50%] group-hover:opacity-100 hover:-rotate-90 active:scale-90"
+                >
+                  <img src="delete.png"  alt="" />
+                </div>
+              <img src={movie.posterPath}  onError={()=>setImageError(true)}  alt="" />
+            </div>
+          ))}
+      </div>
+
+      {expand===playlist._id && cardView && <EditCard fetchPlaylists={fetchPlaylists} cardViewHandler={cardViewHandler} playlist={playlist} />}
+    </div>
+  );
+}
+
+function PlaylistBody({ username }) {
+  const [playlist, setPlaylist] = useState([]);
+  const [addPlaylistState, setAddPlaylistState] = useState(false);
+
+  const { response, error, loading, fetchData } = useFetchData();
+    
+  const fetchPlaylists=()=>fetchData(`http://localhost:3000/api/lists/playlist/${username}`, "get");
+  useEffect(() => {
+    fetchPlaylists()
+  }, [username]);
+  useEffect(() => {
+    if (response) setPlaylist(response.playlists);
+  }, [response]);
+
+  const addPlaylistStateHandler = () => setAddPlaylistState((prev) => !prev);
+
+  const [expand, setExpand] = useState(null);
+  const [cardView, setCardView] = useState(null);
+  const cardViewHandler=() => {
+    setCardView((prev) => !prev)
+
   }
-  export default PlaylistBody
+  const expandHandler = (playlist_id) => {
+    setExpand(expand === playlist_id ? null : playlist_id); // Toggle the expand state
+  };
+  const renderMovies = () => {
+    if (loading)
+      return Array.from({ length: 5 }).map((item) => {
+        return <Skeleton />;
+      });
+    else if (error)
+      return (
+        <div className="font-bold text-center text-xl space-y-2">
+         <p> Coudn't Fetch Data Try Reloading the page</p>
+         <button className={btnClassName} onClick={fetchPlaylists}>Retry</button>
+
+        </div>
+      );
+    else if (playlist.length === 0)
+      return (
+        <div className="font-bold text-center text-xl">No Movies Found</div>
+      );
+    else {
+      return playlist.map((item, key) => {
+        return <PlaylistCard  fetchPlaylists={fetchPlaylists} cardView={cardView} expand={expand} cardViewHandler={cardViewHandler} expandHandler={expandHandler} key={key} playlist={item} />;
+      });
+    }
+  }; 
+  return (
+    <div className="flex gap-10 flex-col">
+      <div className="flex gap-4 items-center font-semibold my-6">
+        <div className="bg-accent h-10 w-2 ml-2"></div>
+        <h1 className=" text-xl">{`PLAYLISTS YOU HAVE: ${playlist.length}`}</h1>
+      </div>
+      <div className="flex justify-center">
+        {" "}
+        <img
+          src="/add.png"
+          onClick={addPlaylistStateHandler}
+          className="w-14 hover:rotate-90 active:scale-90 cursor-pointer transition-all duration-200"
+          alt=""
+        />{" "}
+      </div>
+      {addPlaylistState && (
+        <NameDescriptionCard
+          addPlaylistStateHandler={addPlaylistStateHandler}
+          username={username}
+        />
+      )}
+      {renderMovies()}
+    </div>
+  );
+}
+export default PlaylistBody;

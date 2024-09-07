@@ -12,7 +12,10 @@ const userSchema = new mongoose.Schema({
     name: {type: String},
     description: {type: String},
     highlights: [{type: String}],
-    movies: [{ type: Number, ref: "Movie" }]
+    movies: [{
+      movieId: { type: Number, ref: "Movie" },  // Reference to the Movie ID (Number)
+      posterPath: { type: String }              // String property for the movie title
+    }]
    }],
   reviews: [{
     reviewId: mongoose.Schema.ObjectId,

@@ -12,7 +12,7 @@ export const createPlaylist = async (req, res) => {
     const { name, description } = req.body;
 
     const user = await User.findOne({ username });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({data:{ message: "User not found" }});
 
     const newPlaylist = {
       name,
@@ -23,10 +23,10 @@ export const createPlaylist = async (req, res) => {
     user.playlists.push(newPlaylist);
     await user.save();
 
-    res.status(201).json({ message: "Playlist created successfully", playlist: newPlaylist });
+    res.status(201).json({data:{ message: "Playlist created successfully", playlist: newPlaylist }});
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({data:{ message: "Server Error" }});
   }
 };
 export const getPlaylists = async (req, res) => {
@@ -34,7 +34,7 @@ export const getPlaylists = async (req, res) => {
     const { username } = req.params;
 
     const user = await User.findOne({ username });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({data:{ message: "User not found" }});
 
     res.status(200).json({data:{ playlists: user.playlists }});
   } catch (error) {
@@ -47,10 +47,10 @@ export const getPlaylist = async (req, res) => {
     const { username, playlistID } = req.params;
 
     const user = await User.findOne({ username });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({data:{ message: "User not found" }});
 
     const playlist = user.playlists.id(playlistID);
-    if (!playlist) return res.status(404).json({ message: "Playlist not found" });
+    if (!playlist) return res.status(404).json({data:{ message: "Playlist not found"} });
 
     const movies=[]
     await Promise.all(
@@ -60,30 +60,32 @@ export const getPlaylist = async (req, res) => {
      })
    );
 
-    res.status(200).json({ data: movies, playlist });
+    res.status(200).json({data:{ data: movies, playlist }});
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({data:{ message: "Server Error" }});
   }
 };
 export const updatePlaylist = async (req, res) => {
+  console.log('asdf')
   try {
     const { username, playlistID } = req.params;
-    const { playlistName } = req.body;
+    const { name, description } = req.body;
 
     const user = await User.findOne({ username });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({data:{ message: "User not found" }});
 
     const playlist = user.playlists.id(playlistID);
-    if (!playlist) return res.status(404).json({ message: "Playlist not found" });
+    if (!playlist) return res.status(404).json({data:{ message: "Playlist not found" }});
 
-    playlist.name = playlistName || playlist.name;
+    if (name) playlist.name=name
+    if (description) playlist.description=description
     await user.save();
 
-    res.status(200).json({ message: "Playlist updated successfully", playlist });
+    res.status(200).json({data:{ message: "Playlist updated successfully", playlist }});
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({data:{ message: "Server Error" }});
   }
 };
 export const deletePlaylist = async (req, res) => {
@@ -91,18 +93,18 @@ export const deletePlaylist = async (req, res) => {
     const { username, playlistID } = req.params;
 
     const user = await User.findOne({ username });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({data:{ message: "User not found"} });
 
     const playlist = user.playlists.id(playlistID);
-    if (!playlist) return res.status(404).json({ message: "Playlist not found" });
+    if (!playlist) return res.status(404).json({data:{ message: "Playlist not found" }});
 
     playlist.remove();
     await user.save();
 
-    res.status(200).json({ message: "Playlist deleted successfully" });
+    res.status(200).json({data:{ message: "Playlist deleted successfully"} });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({data:{ message: "Server Error"} });
   }
 };
 export const addToPlaylist = async (req, res) => {
@@ -111,17 +113,17 @@ export const addToPlaylist = async (req, res) => {
     const movie=req.body
 
     const user = await User.findOne({ username });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({data:{ message: "User not found"} });
 
     const playlist = user.playlists.id(playlistID);
-    if (!playlist) return res.status(404).json({ message: "Playlist not found" });
+    if (!playlist) return res.status(404).json({data:{ message: "Playlist not found" }});
 
     if (!playlist.movies.includes(movie.tmbdId)) {
       
     const movieStored = await persistMovie(movie);
     if (!movieStored) throw new Error('Couldn\'t persist movie');
-      playlist.movies.push(movie.tmbdId);
-      if(playlist.highlights.length<3) playlist.highlights.push(movie.posterPath)
+      playlist.movies.push({movieId:movie.tmbdId, posterPath: movie.posterPath});
+
       await user.save();
       res.status(200).json({data:{ message: "Movie added to playlist", playlist }});
     } else {
@@ -134,25 +136,25 @@ export const addToPlaylist = async (req, res) => {
 };
 export const removeFromPlaylist = async (req, res) => {
   try {
-    const { username, playlistID, movieId } = req.params;
+     const { username, playlistID, movieId } = req.params;
 
     const user = await User.findOne({ username });
-    if (!user) return res.status(404).json({ message: "User not found" });
+    if (!user) return res.status(404).json({data:{ message: "User not found"} });
 
     const playlist = user.playlists.id(playlistID);
-    if (!playlist) return res.status(404).json({ message: "Playlist not found" });
+    if (!playlist) return res.status(404).json({data:{ message: "Playlist not found" }});
 
-    const movieIndex = playlist.movies.indexOf(movieId);
+    const movieIndex = playlist.movies.findIndex((movie) => movie.movieId.toString() === movieId.toString());
     if (movieIndex > -1) {
       playlist.movies.splice(movieIndex, 1);
       await user.save();
-      res.status(200).json({ message: "Movie removed from playlist", playlist });
+      res.status(200).json({data:{ message: "Movie removed from playlist", playlist }});
     } else {
-      res.status(400).json({ message: "Movie not found in playlist" });
+      res.status(400).json({data:{ message: "Movie not found in playlist" }});
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({data:{ message: "Server Error" }});
   }
 };
 
@@ -165,7 +167,7 @@ export const getList = async (req, res, routeList) => {
     const user = await User.findOne({ username });
     
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(404).json({data:{ message: "User not found"} });
     }
 
     const list = user[routeList];
@@ -180,7 +182,7 @@ export const getList = async (req, res, routeList) => {
     res.status(200).json({ data: {results: movies} });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Server Error" });
+    res.status(500).json({data:{ message: "Server Error" }});
   }
 };
 // Function to add a movie to the user's watchlist

@@ -4,7 +4,7 @@ import { toast } from "sonner";
 function useFetchData(initialUrl, initialMethod, initialBody) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [data, setData] = useState(null);
+  const [response, setResponse] = useState(null);
 
   const fetchData = useCallback((url, method, body) => {
     const abortController = new AbortController();
@@ -27,7 +27,7 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
         return res.json();
       })
       .then((res) => {
-        setData(res.data || res);
+        setResponse(res.data);
         setLoading(false);
       })
       .catch((e) => {
@@ -41,13 +41,8 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
     return () => abortController.abort();
   }, []);
 
-  useEffect(() => {
-    if (initialUrl) {
-      fetchData(initialUrl, initialMethod, initialBody);
-    }
-  }, [initialUrl, initialMethod, initialBody, fetchData]);
-
-  return { loading, error, data, fetchData };
+ 
+  return { loading, error, response, fetchData };
 }
 
 export default useFetchData;

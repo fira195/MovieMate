@@ -108,7 +108,7 @@ const PlaylistListComponent = ({ username, tmbdId, movie, onClose }) => {
 
   const addToPlaylist = async (playlist) => {
     await fetchData(
-      `${process.env.REACT_APP_API_URL}/api/lists/playlist/${username}/${playlist._id}/${tmbdId}`,
+      `http://localhost:3000/api/lists/playlist/${username}/${playlist._id}/${tmbdId}`,
       "POST",
       movie
     );
@@ -122,7 +122,7 @@ const PlaylistListComponent = ({ username, tmbdId, movie, onClose }) => {
         <div
           key={playlist._id}
           onClick={() => addToPlaylist(playlist)}
-          className="hover:bg-accent hover:text-third cursor-pointer p-2"
+          className="hover:bg-accent  hover:text-thrid cursor-pointer p-2"
         >
           {playlist.name}
         </div>
