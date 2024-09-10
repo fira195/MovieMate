@@ -1,7 +1,7 @@
 import { useFormik } from "formik";
 import MovieCard from "../components/MovieCard";
 import { useEffect, useRef, useState } from "react";
-import Loading, { Pagination } from "./helper";
+import Loading, { Pagination } from "../components/helper";
 import { useNavigate, useParams } from "react-router-dom";
 import useFetchData from "../hooks/useFetch";
 import useDebounce from "../hooks/useDebounce";
@@ -54,18 +54,17 @@ function Search() {
   //delay the api call
   const debouncedSearch = useDebounce(search, 500);
 
-  const link=`http://localhost:3000/api/movies/search/${search.trimEnd()}/${currentPage}`
-  const {loading, err, response, fetchData}=useFetchData(link)
+   const {loading, err, response, fetchData}=useFetchData()
 
   useEffect(() => {
     if (debouncedSearch && debouncedSearch.trim()) {
-      fetchData()
+      fetchData(`http://localhost:3000/api/movies/search/${search.trimEnd()}/${currentPage}`, 'POST')
           } 
   }, [search, currentPage]);
 
   
   return (
-    <div className={`bg-main relative ${response && !response.movies && "h-screen"} p-10 md:px-20`}>
+    <div className={`bg-main relative ${!response?.movies && "h-screen"} p-10 md:px-20`}>
       {/* <div className=" border-b-2 border-black h-52 absolute top-full z-0"></div> */}
 
       <div className="w-full text-center relative z-10 pt-44">

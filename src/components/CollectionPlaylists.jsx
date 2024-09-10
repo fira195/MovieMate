@@ -1,11 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import useFetchData from "../hooks/useFetch";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { btnClassName, btnClassName2 } from "../utils/css";
 import { toast } from "sonner";
-import Loading from "../pages/helper";
+import Loading, { Scroller } from "./helper";
 import { useSelector } from "react-redux";
 
 function EditCard({ playlist, cardViewHandler, fetchPlaylists }) {
@@ -24,7 +24,7 @@ function EditCard({ playlist, cardViewHandler, fetchPlaylists }) {
       fetchData(
         `http://localhost:3000/api/lists/playlist/${user.username}/${playlist._id}`,
         "PUT",
-        values  
+        values
       );
     },
   });
@@ -37,13 +37,14 @@ function EditCard({ playlist, cardViewHandler, fetchPlaylists }) {
       cardViewHandler(); // Close the edit form
     });
   };
-  
+
   useEffect(() => {
-    if (response) {toast.success(response?.message)
-      cardViewHandler()
-      fetchPlaylists()
+    if (response) {
+      toast.success(response?.message);
+      cardViewHandler();
+      fetchPlaylists();
     }
-  },[response]);
+  }, [response]);
   return (
     <div className="border-2 top-0  border-black z-30 absolute bg-main flex flex-col p py-10 p-4 gap-4 mt-6 w-fit">
       <form onSubmit={formik.handleSubmit}>
@@ -81,7 +82,7 @@ function EditCard({ playlist, cardViewHandler, fetchPlaylists }) {
             >
               {loading ? <Loading /> : "Update"}
             </button>
-            <button 
+            <button
               type="button"
               onClick={deletePlaylist}
               className="rounded-md transition-all duration-300 hover:scale-105 active:scale-95 px-4 p-2  border-2 border-black"
@@ -196,31 +197,41 @@ function NameDescriptionCard({ addPlaylistStateHandler, username }) {
   );
 }
 
-function PlaylistCard({ playlist, expand, expandHandler, cardView, cardViewHandler, fetchPlaylists }) {
+function PlaylistCard({
+  playlist,
+  expand,
+  expandHandler,
+  cardView,
+  cardViewHandler,
+  fetchPlaylists,
+}) {
   const { response, error, fetchData, loading } = useFetchData();
-  const user=useSelector(state=>state.user)
+  const user = useSelector((state) => state.user);
 
   const navigate = useNavigate();
-  const removeMovie=(e,movieId)=>{
-
+  const removeMovie = (e, movieId) => {
     e.stopPropagation();
-    fetchData(`http://localhost:3000/api/lists/playlist/${user.username}/${playlist._id}/${movieId}`, "DELETE");
-  }
-  useEffect(()=>{
-    if (response){
-      toast.success(response?.message)
-      fetchPlaylists()
+    fetchData(
+      `http://localhost:3000/api/lists/playlist/${user.username}/${playlist._id}/${movieId}`,
+      "DELETE"
+    );
+  };
+  useEffect(() => {
+    if (response) {
+      toast.success(response?.message);
+      fetchPlaylists();
     }
-  })
+  });
 
-  const [imageError, setImageError]=useState(false)
+  const [imageError, setImageError] = useState(false);
+  const ref=useRef()
   return (
     <div
       onClick={(e) => {
         if (e.target.classList.contains("expand")) expandHandler(playlist._id);
       }}
       className={`expand relative border-2 border-black p-6 py-10 cursor-pointer  transition-transform ease-in-out w-full  ${
-        expand===playlist._id ? "h-96 mb-44" : "h-40"
+        expand === playlist._id ? "h-96 mb-44" : "h-40"
       }`}
       style={{ transition: "height 0.2s ease-in-out" }}
     >
@@ -237,7 +248,7 @@ function PlaylistCard({ playlist, expand, expandHandler, cardView, cardViewHandl
           </p>
         </div>
       </div>
-      {expand===playlist._id && (
+      {expand === playlist._id && (
         <div className="flex justify-end align-top my-4">
           <button
             onClick={cardViewHandler}
@@ -247,30 +258,46 @@ function PlaylistCard({ playlist, expand, expandHandler, cardView, cardViewHandl
           </button>
         </div>
       )}
+      <div className="relative">
       <div
-        className={`expand flex gap-4 overflow-scroll no-scrollbar transition-all duration-500 ease-in-out`}
+      ref={ref}
+        className={`expand  flex gap-4 overflow-y-hidden overflow-x-scroll no-scrollbar transition-all duration-500 ease-in-out`}
       >
-        { 
-          expand===playlist._id &&
+        {expand === playlist._id &&
           playlist?.movies?.map((movie, indx) => (
             <div
               key={movie.movieId}
               onClick={() => navigate(`/movie/${movie.movieId}`)}
-              className=" lg:w-60 w-44 relative   flex-shrink-0 hover:scale-[101%] transition-all duration-200 group"
+              className=" lg:w-60 w-44 relative flex-shrink-0 hover:scale-[101%] transition-all duration-200 group"
             >
-              {imageError && <div className="h-44 w-full bg-accent"></div>}
               <div
-                onClick={(e)=>removeMovie(e,movie.movieId)}
+                onClick={(e) => removeMovie(e, movie.movieId)}
                 className="w-8 h-8 left-1/2 bottom-4 -translate-x-1/2 absolute opacity-0 transition-all duration-300 bg-main p-2 rounded-[50%] group-hover:opacity-100 hover:-rotate-90 active:scale-90"
-                >
-                  <img src="delete.png"  alt="" />
-                </div>
-              <img src={movie.posterPath}  onError={()=>setImageError(true)}  alt="" />
+              >
+                {loading? <Loading/> :<img src="delete.png" alt="" />}
+              </div>
+              {(!movie.posterPath && !imageError) ? (
+                <div className=" h-full w-full bg-accent flex items-center justify-center text-thrid font-medium">Couldn't Load Image </div>
+              ) : (
+                <img
+                  src={movie.posterPath}
+                  onError={() => setImageError(true)}
+                />
+              )}
             </div>
           ))}
+      {playlist?.movies && expand === playlist._id && <Scroller containerRef={ref}/>}
       </div>
 
-      {expand===playlist._id && cardView && <EditCard fetchPlaylists={fetchPlaylists} cardViewHandler={cardViewHandler} playlist={playlist} />}
+      </div>
+
+      {expand === playlist._id && cardView && (
+        <EditCard
+          fetchPlaylists={fetchPlaylists}
+          cardViewHandler={cardViewHandler}
+          playlist={playlist}
+        />
+      )}
     </div>
   );
 }
@@ -280,10 +307,11 @@ function PlaylistBody({ username }) {
   const [addPlaylistState, setAddPlaylistState] = useState(false);
 
   const { response, error, loading, fetchData } = useFetchData();
-    
-  const fetchPlaylists=()=>fetchData(`http://localhost:3000/api/lists/playlist/${username}`, "get");
+
+  const fetchPlaylists = () =>
+    fetchData(`http://localhost:3000/api/lists/playlist/${username}`, "get");
   useEffect(() => {
-    fetchPlaylists()
+    fetchPlaylists();
   }, [username]);
   useEffect(() => {
     if (response) setPlaylist(response.playlists);
@@ -293,10 +321,9 @@ function PlaylistBody({ username }) {
 
   const [expand, setExpand] = useState(null);
   const [cardView, setCardView] = useState(null);
-  const cardViewHandler=() => {
-    setCardView((prev) => !prev)
-
-  }
+  const cardViewHandler = () => {
+    setCardView((prev) => !prev);
+  };
   const expandHandler = (playlist_id) => {
     setExpand(expand === playlist_id ? null : playlist_id); // Toggle the expand state
   };
@@ -308,9 +335,10 @@ function PlaylistBody({ username }) {
     else if (error)
       return (
         <div className="font-bold text-center text-xl space-y-2">
-         <p> Coudn't Fetch Data Try Reloading the page</p>
-         <button className={btnClassName} onClick={fetchPlaylists}>Retry</button>
-
+          <p> Coudn't Fetch Data Try Reloading the page</p>
+          <button className={btnClassName} onClick={fetchPlaylists}>
+            Retry
+          </button>
         </div>
       );
     else if (playlist.length === 0)
@@ -319,10 +347,20 @@ function PlaylistBody({ username }) {
       );
     else {
       return playlist.map((item, key) => {
-        return <PlaylistCard  fetchPlaylists={fetchPlaylists} cardView={cardView} expand={expand} cardViewHandler={cardViewHandler} expandHandler={expandHandler} key={key} playlist={item} />;
+        return (
+          <PlaylistCard
+            fetchPlaylists={fetchPlaylists}
+            cardView={cardView}
+            expand={expand}
+            cardViewHandler={cardViewHandler}
+            expandHandler={expandHandler}
+            key={key}
+            playlist={item}
+          />
+        );
       });
     }
-  }; 
+  };
   return (
     <div className="flex gap-10 flex-col">
       <div className="flex gap-4 items-center font-semibold my-6">

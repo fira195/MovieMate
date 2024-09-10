@@ -2,7 +2,7 @@
   import { useFormik } from "formik";
   import * as Yup from "yup";
   import useFetchData from "../hooks/useFetch";
-  import Loading from "./helper";
+  import Loading from "../components/helper";
   import { Link, useLocation, useNavigate } from "react-router-dom";
   import { useDispatch, useSelector } from "react-redux";
   import { login } from "../redux/userSlice";
@@ -41,7 +41,7 @@
       },
     });
     useEffect(() => {
-      const from=location.state?.from?.pathname
+      const from=location.state?.from?.pathname || '/'
       if (localStorage.getItem("accessToken")) {
        return navigate(from);
       }
@@ -115,7 +115,7 @@
               className="w-full bg-accent text-white font-bold py-2 px-4 rounded-md hover:opacity-90 transition-colors duration-300"
               disabled={loading}
             >
-              {loading ? <Loading /> : "Login"}
+              {loading ? <div className="size-8 m-auto"><Loading /></div> : "Login"}
             </button>
             <p className="text-sm"><Link to="/forgot-password">Forgot Password?</Link></p>
             {err && <div className="text-red-500 text-sm mt-1">{err}</div>}

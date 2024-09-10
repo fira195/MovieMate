@@ -11,7 +11,6 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Toaster } from "sonner";
 import GenreProvider from "./components/GenreProvider";
-import Loading from "./pages/helper";
 import Login from "./pages/Login";
 import PrivateRoutes from "./components/PrivateRoutes";
 import ForgotPassword from "./pages/ForgotPassword";
@@ -39,7 +38,6 @@ function App() {
             <Route path="/profile" element={<Profile />} />
           </Route>
           
-          <Route path="/help" element={<Loading />} />
         </Routes>
         <Footer />
       </GenreProvider>

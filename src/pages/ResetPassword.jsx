@@ -1,6 +1,6 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import Loading from "./helper";
+import Loading from "../components/helper";
 import useFetchData from "../hooks/useFetch";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";

@@ -77,9 +77,8 @@ function Scroller({ containerRef }) {
 }
 
 function Loading() {
-
   return (
-    <div className="border-4 size-10 border-t-accent rounded-[50%] animate-spin m-auto"></div>
+    <div className="border-4 size-full border-t-accent rounded-[50%] animate-spin m-auto"></div>
   );
 }
 

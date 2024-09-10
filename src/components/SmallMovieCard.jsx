@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
-import Loading from "../pages/helper";
+import Loading from "./helper";
 import useFetchData from "../hooks/useFetch";
 
 function SmallMovieCard({ title, releaseDate, tmbdId, ratings, posterPath, username, url, updataList }) {
@@ -96,7 +96,7 @@ function SmallMovieCard({ title, releaseDate, tmbdId, ratings, posterPath, usern
           name="Liked"
           className="w-6 hover:-rotate-90 active:scale-90 rounded-lg transition-all duration-300"
         >
-          <img src="/delete.png" alt="" />{" "}
+          {loading?<Loading/>:<img src="/delete.png" alt="" />}
         </div>
       </div>
       {playlistView && (

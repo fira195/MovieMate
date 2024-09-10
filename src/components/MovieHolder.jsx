@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import MvieCard from "./MovieCard";
-import Loading, { Scroller } from "../pages/helper";
+import Loading, { Scroller } from "./helper";
 import useFetchData from "../hooks/useFetch";
 import { btnClassName } from "../utils/css";
 
@@ -14,7 +14,7 @@ function MovieHolder({ title, url }) {
 
   const renderMovies = () => {
     if (loading) {
-      return <Loading />;
+      return <div className="size-10 m-auto"><Loading /></div>;
     }
 
     if (error) {

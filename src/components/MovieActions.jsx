@@ -3,7 +3,7 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import useFetchData from "../hooks/useFetch";
-import Loading from "../pages/helper";
+import Loading from "./helper";
 
 const actionsList = [
   { name: "watchlist", icon: "/watchlist.png" },

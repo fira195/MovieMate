@@ -28,7 +28,7 @@ function Header() {
   const user=useSelector(state=>state.user)
   return (
     <header className={`w-full fixed top-0 p-4 px-8 lg:px-20 flex justify-between items-center transition duration-200 ${color ? 'bg-main shadow-md' : ''} z-30`}>
-      <div className="size-7 rotate-45 rounded-sm bg-accent"></div>
+      <Link to='/landing' ><div className="size-7 rotate-45 rounded-sm bg-accent"></div></Link>
 
       <nav >
         <ul className="  gap-8 items-center hidden md:flex font-semibold">

@@ -2,7 +2,7 @@ import { toast } from "sonner";
 import MovieCard from "../components/MovieCard";
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
-import Loading from "./helper";
+ 
 import PosterImage from "../components/PosterImage";
 import useFetchData from "../hooks/useFetch";
 import { useSelector } from "react-redux";

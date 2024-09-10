@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import Loading from "../pages/helper";
+import Loading from "./helper";
 
 
 function PosterImage({ src, alt, width }) {

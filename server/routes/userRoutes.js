@@ -6,12 +6,12 @@ const router = express.Router();
 
 router.post('/register', register);
 router.post('/login', login);
-router.post('/logout', logout);
+router.post('/logout',authenticate, logout);
 router.post('/refresh-token', refreshToken);
-router.post ('/forgot-password/:username', forgotPassword);
-router.post('/reset-password/:username/:token', resetPassword);
+router.post ('/forgot-password/:username',authenticate, forgotPassword);
+router.post('/reset-password/:username/:token',authenticate, resetPassword);
 router.post('/profile', authenticate, profile);
-router.post('/update/:username', editProfile);
+router.post('/update/:username',authenticate, editProfile);
 //router.post('/profile',authenticate, login);
 
 export default router;  

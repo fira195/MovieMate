@@ -1,7 +1,7 @@
 import { useState } from "react";
 import MovieHolder from "../components/MovieHolder";
 import { useSelector } from "react-redux";
-import Loading from "./helper";
+import Loading from "../components/helper";
 
 function GenreComponent() {
   const [title, setTitle] = useState({ id: 28, name: "Action" });

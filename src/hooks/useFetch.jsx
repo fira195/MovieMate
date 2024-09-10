@@ -8,11 +8,13 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
 
   const fetchData = useCallback((url, method, body) => {
     const abortController = new AbortController();
+    const token=localStorage.getItem('accessToken')
     const options = {
       method,
       headers: {
         accept: "application/json",
         "Content-Type": "application/json",
+        'Authorization': `Bearer ${token}`  
       },
       body: body ? JSON.stringify(body) : undefined,
       signal: abortController.signal

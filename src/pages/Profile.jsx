@@ -7,7 +7,7 @@ import { btnClassName2 } from "../utils/css";
 import { useDispatch, useSelector } from "react-redux";
 import useFetchData from "../hooks/useFetch";
 import { toast } from "sonner";
-import Loading from "./helper";
+import Loading from "../components/helper";
 import { login, logout } from "../redux/userSlice";
 import { useNavigate } from "react-router-dom";
 

@@ -1,20 +1,11 @@
 import { useEffect, useState } from "react";
 import SmallMovieCard from "../components/SmallMovieCard";
-import { toast } from "sonner";
-import { useNavigate } from "react-router-dom";
-import { useFormik } from "formik";
-import * as Yup from "yup";
-import useDrag from "../hooks/useDrag";
+
 import useFetchData from "../hooks/useFetch";
-import Loading from "./helper";
 import { useSelector } from "react-redux";
 import PlaylistBody from "../components/CollectionPlaylists";
 
-
-
 //expand
-
-
 
 function Skeleton() {
   return <div className="bg-gray-500 w-full h-20 skeleton-shimmer"></div>;
@@ -31,7 +22,7 @@ function Lists({ url, username, openTitle }) {
   }, [url]); // Dependencies should include response and fetchData
 
   useEffect(() => {
-     if (response) {
+    if (response) {
       setMovies(response.results); // Set the movies after the response is ready
     }
   }, [fetchData]);
@@ -53,14 +44,13 @@ function Lists({ url, username, openTitle }) {
           Coudn't Fetch Data Try Reloading the page
         </div>
       );
-    else if (movies.length === 0)
+    else if (response?.results.length <= 0)
       return (
         <div className="font-bold text-center text-xl">No Movies Found</div>
       );
     else {
       return (
-        movies.length > 0 &&
-        movies.map((item, key) => (
+        response?.results.map((item, key) => (
           <SmallMovieCard
             key={key}
             {...item}
@@ -76,7 +66,7 @@ function Lists({ url, username, openTitle }) {
     <div>
       <div className="flex gap-4 items-center font-semibold my-6">
         <div className="bg-accent h-10 w-2 ml-2"></div>
-        <h1 className=" text-xl">{`${openTitle}: ${movies.length}`}</h1>
+        <h1 className=" text-xl">{`${openTitle}: ${response?.results?.length}`}</h1>
       </div>
       <div>
         <div className="flex flex-col gap-6 ">{renderMovies()}</div>
@@ -87,139 +77,7 @@ function Lists({ url, username, openTitle }) {
 
 function Collection() {
   const user = useSelector((state) => state.user);
-  const [movies, setMovies] = useState([
-    {
-      tag: "Liked",
-      name: "Avatar",
-      rotten_tomatoes: "9.8",
-      imbd: "9.5",
-      year: "2003",
-    },
-    {
-      tag: "Watchlist",
-      name: "Avatar",
-      rotten_tomatoes: "9.8",
-      imbd: "9.5",
-      year: "2003",
-    },
-    {
-      tag: "Liked",
-      name: "Avatar",
-      rotten_tomatoes: "9.8",
-      imbd: "9.5",
-      year: "2003",
-    },
-    {
-      tag: "Liked",
-      name: "Avatar",
-      rotten_tomatoes: "9.8",
-      imbd: "9.5",
-      year: "2003",
-    },
-    {
-      tag: "Watched",
-      name: "Avatar",
-      rotten_tomatoes: "9.8",
-      imbd: "9.5",
-      year: "2003",
-    },
-    {
-      tag: "Watchlist",
-      name: "Avatar",
-      rotten_tomatoes: "9.8",
-      imbd: "9.5",
-      year: "2003",
-    },
-    {
-      tag: "Liked",
-      name: "Avatar",
-      rotten_tomatoes: "9.8",
-      imbd: "9.5",
-      year: "2003",
-    },
-  ]);
 
-  const playlist = [
-    {
-      playlist_name: "plalist 2",
-      detail: "sleppy lippy",
-      movies: [
-        {
-          name: "Avatar",
-          rotten_tomatoes: "9.8",
-          imbd: "9.5",
-          year: "2003",
-        },
-        {
-          name: "Avatar",
-          rotten_tomatoes: "9.8",
-          imbd: "9.5",
-          year: "2003",
-        },
-
-        {
-          name: "Avatar",
-          rotten_tomatoes: "9.8",
-          imbd: "9.5",
-          year: "2003",
-        },
-        {
-          name: "Avatar",
-          rotten_tomatoes: "9.8",
-          imbd: "9.5",
-          year: "2003",
-        },
-        {
-          name: "Avatar",
-          rotten_tomatoes: "9.8",
-          imbd: "9.5",
-          year: "2003",
-        },
-        {
-          name: "Avatar",
-          rotten_tomatoes: "9.8",
-          imbd: "9.5",
-          year: "2003",
-        },
-      ],
-    },
-    {
-      playlist_name: "plalist 1",
-      detail: "sleppy lippy",
-      movies: [
-        {
-          name: "Avatar",
-          rotten_tomatoes: "9.8",
-          imbd: "9.5",
-          year: "2003",
-        },
-      ],
-    },
-    {
-      playlist_name: "plalist 1",
-      detail: "sleppy lippy",
-      movies: [
-        {
-          name: "Avatar",
-          rotten_tomatoes: "9.8",
-          imbd: "9.5",
-          year: "2003",
-        },
-        {
-          name: "Avatar",
-          rotten_tomatoes: "9.8",
-          imbd: "9.5",
-          year: "2003",
-        },
-        {
-          name: "Avatar",
-          rotten_tomatoes: "9.8",
-          imbd: "9.5",
-          year: "2003",
-        },
-      ],
-    },
-  ];
   const tabs = [
     {
       tab: "Watchlist",
@@ -271,7 +129,7 @@ function Collection() {
       </div>
 
       {tabs[active].tab === "Playlist" ? (
-        <PlaylistBody  username={user.username}/>
+        <PlaylistBody username={user.username} />
       ) : (
         <Lists
           url={tabs[active].url}
