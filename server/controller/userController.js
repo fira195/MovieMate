@@ -9,7 +9,7 @@ export const register = async (req, res) => {
 
   try {
     if (!username && !password)
-      return res.status(401).json({ message: "Invalid User Information" });
+      return res.status(400).json({ message: "Invalid User Information" });
 
     const existingUser = await User.findOne({ username });
     if (existingUser) {
@@ -155,7 +155,7 @@ export const refreshToken = async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
 
     if (!refreshToken)
-      return res.status(401).json({ message: "No refresh token provided" });
+      return res.status(403).json({ message: "No refresh token provided" });
 
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
 
@@ -165,10 +165,10 @@ export const refreshToken = async (req, res) => {
       { expiresIn: 60 }
     );
 
-    res.json({ accessToken: newAccessToken });
+    res.json({data:{ accessToken: newAccessToken }});
   } catch (e) {
     console.error(e);
-    res.status(401).json({ message: "Invalid refresh token" });
+    res.status(401).json({data:{ message: "Invalid refresh token" }});
   }
 };
 
@@ -182,14 +182,14 @@ export const resetPassword = async (req, res) => {
 
     // Check if the token's username matches the request's username
     if (decoded.username !== username) {
-        return res.status(400).json({ data: { message: "User Not Found" } });
+      return res.status(400).json({ data: { message: "User Not Found" } });
     }
 
     // Await the result of finding the user
     const user = await User.findOne({ username });
 
     if (!user) {
-        return res.status(400).json({ data: { message: "User Not Found" } });
+      return res.status(400).json({ data: { message: "User Not Found" } });
     }
 
     // Hash the new password
@@ -203,12 +203,13 @@ export const resetPassword = async (req, res) => {
     await user.save();
 
     // Respond with success
-    res.status(200).json({ data: { message: 'Password is updated successfully' } });
-} catch (e) {
+    res
+      .status(200)
+      .json({ data: { message: "Password is updated successfully" } });
+  } catch (e) {
     console.log(e);
     res.status(500).json({ data: { message: "Server Error" } });
-}
-
+  }
 };
 
 export const forgotPassword = (req, res) => {
@@ -231,7 +232,9 @@ export const forgotPassword = (req, res) => {
     Reset your password using this link
     http://localhost:5173/reset-password/${username}/${token}`,
     });
-    res.status(200).json({data: {message: 'Please Check Your Email For Reset Link'}})
+    res
+      .status(200)
+      .json({ data: { message: "Please Check Your Email For Reset Link" } });
   } catch (e) {
     console.log(e);
     res.status(500).json({ data: { message: "Server Error" } });

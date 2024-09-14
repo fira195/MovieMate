@@ -15,6 +15,6 @@ export const authenticate = (req, res, next) => {
     req.user = decoded; // Attach the user information to the request object
     next(); // Call the next middleware function
   } catch (err) {
-    res.status(400).json({ msg: 'Token is not valid' });
+    res.status(401).json({ msg: 'Token is not valid' });
   }
 };
