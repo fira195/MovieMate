@@ -83,8 +83,8 @@ function Search() {
       </div>
 
       {loading ? (
-        <div className="h-screen">
-          <Loading />
+        <div className="size-20 m-auto">
+          <Loading/>
         </div>
       ) :response && response.movies && response && response.movies.length === 0 ? (
         <h1 className="text-xl text-center font-bold h-screen">

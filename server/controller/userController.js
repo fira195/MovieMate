@@ -153,8 +153,8 @@ export const logout = (req, res) => {
 export const refreshToken = async (req, res) => {
   try {
     const refreshToken = req.cookies.refreshToken;
-
-    if (!refreshToken)
+    console.log('refreshToken', refreshToken)
+    if (!refreshToken)      
       return res.status(403).json({ message: "No refresh token provided" });
 
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
@@ -165,7 +165,7 @@ export const refreshToken = async (req, res) => {
       { expiresIn: 60 }
     );
 
-    res.json({data:{ accessToken: newAccessToken }});
+    res.json({data:{ accessToken: newAccessToken,  }});
   } catch (e) {
     console.error(e);
     res.status(401).json({data:{ message: "Invalid refresh token" }});

@@ -5,11 +5,12 @@ import useFetchData from "../hooks/useFetch";
 import { btnClassName } from "../utils/css";
 
 function MovieHolder({ title, url }) {
-  const { response, loading, error, fetchData } = useFetchData();  
+  const { loading, error, fetchData } = useFetchData();  
+  let response=null
   const containerRef = useRef();
 
   useEffect(() => {
-    fetchData(url, 'GET');
+    response = fetchData(url, 'GET');
   }, [url]);
 
   const renderMovies = () => {
@@ -21,7 +22,7 @@ function MovieHolder({ title, url }) {
       return (
         <div className="m-auto text-center space-y-4">
           <p>Couldn't Fetch Data</p>
-          <button className={btnClassName} onClick={fetchData}>
+          <button className={btnClassName} onClick={()=>fetchData(url, 'GET')}>
             Retry
           </button>
         </div>

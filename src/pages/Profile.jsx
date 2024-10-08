@@ -3,7 +3,7 @@ import MovieHolder from "../components/MovieHolder";
 import * as Yup from "yup";
 import React, { useEffect, useRef, useState } from "react";
 import useDrag from "../hooks/useDrag";
-import { btnClassName2 } from "../utils/css";
+import { btnClassName,btnClassName2 } from "../utils/css";
 import { useDispatch, useSelector } from "react-redux";
 import useFetchData from "../hooks/useFetch";
 import { toast } from "sonner";
@@ -11,8 +11,6 @@ import Loading from "../components/helper";
 import { login, logout } from "../redux/userSlice";
 import { useNavigate } from "react-router-dom";
 
-const btnClassName =
-  "bg-accent  font-semibold w-fit transition-transform hover:scale-105 active:scale-90 text-thrid p-2 px-3 rounded-xl ";
 
 function Accordion() {
   const [open, setOpen] = useState(false);
@@ -58,7 +56,7 @@ function Accordion() {
   );
 }
 
-function EditUserCard() {
+function EditUserCard({onClick}) {
   const user = useSelector((state) => state.user);
   const { loading, err, response, fetchData } = useFetchData();
   const dispatch = useDispatch();
@@ -74,32 +72,29 @@ function EditUserCard() {
         .min(1, "Username must be at least 1 characters long")
         .required("Username is required"),
       password: Yup.string()
-        .min(3, "Bio must be at least 3 characters long")
-        .required("Bio is required"),
+        .min(3, "Password must be at least 3 characters long")
+        .required("Password is required"),
     }),
     onSubmit: async (values) => {
       try {
-        await fetchData(
+        const updateResponse=await fetchData(
           `http://localhost:3000/api/users/update/${user.username}`,
           "POST",
           values
         );
-        if (response) {
-          await fetchData(
+        if (updateResponse) {
+          console.log('sdfg',updateResponse)
+          const updatedUser=await fetchData(
             "http://localhost:3000/api/users/login",
             "POST",
             formik.values
           );
-          if (response) {
-            dispatch(
-              login({
-                username: response.user.username,
-                bio: response.user.bio,
-              })
-            );
+          if (updatedUser) {
+           //console.log(updatedUser)
             navigate("/profile");
+            onClick()
           }
-          toast.success(response?.message);
+          toast.success(updateResponse?.message);
         }
       } catch (e) {
         toast.error(e)
@@ -172,9 +167,14 @@ function EditUserCard() {
           <div className="text-black cursor-text">{formik.errors.password}</div>
         ) : null}
       </div>
+      <div className="space-x-4 flex">
       <button className={btnClassName} type="submit">
         {loading ? <Loading /> : "Submit"}
       </button>
+      <button className={btnClassName2} onClick={onClick}>
+        {"Cancel"}
+      </button>
+      </div>
     </form>
   );
 }
@@ -189,6 +189,8 @@ function Profile() {
     dispatch(logout());
     navigate("/");
   };
+
+  const changeEditUserState=() => setEditUser((prev) => !prev)
   return (
     <div className=" bg-main px-20 relative">
       <div className="bg-gray-500 h-52 inset-0 absolute w-full z-0"></div>
@@ -199,14 +201,14 @@ function Profile() {
           <p className="font-bold text-xl mb-2">{user?.username}</p>
           <p>{user?.bio}</p>
           <button
-            onClick={() => setEditUser((prev) => !prev)}
+            onClick={changeEditUserState}
             className={`${btnClassName} h-fit mt-2`}
           >
             Edit
           </button>
         </div>
       </div>
-      {editUser && <EditUserCard />}
+      {editUser && <EditUserCard onClick={changeEditUserState}/>}
 
       <div className="flex flex-col gap-8 mt-8">
         <MovieHolder

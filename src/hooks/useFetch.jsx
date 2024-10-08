@@ -6,7 +6,7 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [response, setResponse] = useState(null);
-  const refreshToken = useRefreshToken();
+  const {refreshToken} = useRefreshToken();
 
   const fetchData = useCallback(async (url, method, body) => {
     let tokenRefreshAttempted = false;  // Reset token refresh flag per request
@@ -21,6 +21,7 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        credentials:'include',
         body: body ? JSON.stringify(body) : undefined,
         signal: abortController.signal,
       };
@@ -28,19 +29,18 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
       try {
         setLoading(true);
         setError(null);
-
         const res = await fetch(url, options);
-
         if (!res.ok) {
           if (res.status === 401 && !tokenRefreshAttempted) {
             // Try refreshing the token only once
             tokenRefreshAttempted = true;
+            console.log(typeof refreshToken)
             const success = await refreshToken();
-
-            if (success) {
+            console.log('khkjgkhjg',success)
+            if (success===true) {
               return performFetch(); // Retry the request after refreshing the token
             } else {
-              throw new Error("Failed to refresh token");
+              throw new Error("Failed to refresh token Login Again");
             }
           } else {
             throw new Error(res.statusText);
@@ -49,9 +49,10 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
 
         const data = await res.json();
         setResponse(data.data); // Assuming the API response has 'data' property
+        return data?.data
       } catch (error) {
         if (error.name !== "AbortError") {
-          toast.error(error.message);
+          toast.error(error.message );
           setError(error.message);
         }
       } finally {

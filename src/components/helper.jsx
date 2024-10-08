@@ -95,7 +95,7 @@ function Pagination({ currentPage, resultPageNumber, setCurrentPage }) {
     setVisible(visible_arr);
   }, [currentPage, resultPageNumber]);
   return (
-    <div className="p-2 px-4 flex transform -translate-x-1/2 absolute left-1/2 mx-auto bottom-10 justify-center gap-2">
+    <div className="p-2 px-4 flex transform bg-main -translate-x-1/2 absolute left-1/2 mx-auto bottom-10 justify-center gap-2">
       {currentPage != 1 && (
         <button
           onClick={() => setCurrentPage(1)}

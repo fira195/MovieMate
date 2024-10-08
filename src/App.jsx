@@ -7,6 +7,7 @@ import Discover from "./pages/Discover";
 import About from "./pages/About";
 import Landing from "./pages/Landing";
 import Movie from "./pages/Movie";
+import Error from "./pages/Error";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { Toaster } from "sonner";
@@ -31,6 +32,7 @@ function App() {
           <Route path="/about" element={<About />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
           <Route path="/reset-password/:username/:token" element={<ResetPassword />} />
+          <Route path="/*" element={<Error/>}/>
 
           <Route path="/login" element={<Login />} />
           <Route element={<PrivateRoutes />}>
