@@ -83,19 +83,22 @@ function EditUserCard({onClick}) {
           values
         );
         if (updateResponse) {
-          console.log('sdfg',updateResponse)
+          console.log('sdfg',updateResponse.data)
           const updatedUser=await fetchData(
             "http://localhost:3000/api/users/login",
             "POST",
             formik.values
           );
           if (updatedUser) {
-           //console.log(updatedUser)
-            navigate("/profile");
-            onClick()
-          }
-          toast.success(updateResponse?.message);
-        }
+            dispatch(
+              login({
+                username: updatedUser.data.user.username,
+                bio: updatedUser.data.user.bio,
+              })
+            );
+          toast.success(updateResponse?.data?.message);
+          onClick()
+        }}
       } catch (e) {
         toast.error(e)
         console.log(e);
@@ -179,23 +182,15 @@ function EditUserCard({onClick}) {
   );
 }
 
-function Profile() {
-  const [editUser, setEditUser] = useState(false);
 
-  const user = useSelector((state) => state.user);
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const logoutFunc = () => {
-    dispatch(logout());
-    navigate("/");
-  };
-
+function ProfileOverView(){
   const changeEditUserState=() => setEditUser((prev) => !prev)
-  return (
-    <div className=" bg-main px-20 relative">
-      <div className="bg-gray-500 h-52 inset-0 absolute w-full z-0"></div>
+  const [editUser, setEditUser] = useState(false);
+  const user = useSelector((state) => state.user);
 
-      <div className="relative z-10 pt-36 flex flex-col md:flex-row ">
+  return(
+    <>
+    <div className="relative z-10 pt-36 flex flex-col md:flex-row ">
         <div className="rounded-[100%] bg-gray-200 border-2 size-40 md:m-0 m-auto "></div>
         <div className="md:pt-20 text-center">
           <p className="font-bold text-xl mb-2">{user?.username}</p>
@@ -208,9 +203,16 @@ function Profile() {
           </button>
         </div>
       </div>
-      {editUser && <EditUserCard onClick={changeEditUserState}/>}
+      {editUser && <EditUserCard onClick={changeEditUserState}/>}   
+      </>
+  )
+}
 
-      <div className="flex flex-col gap-8 mt-8">
+function ProfileMovies(){
+  const user = useSelector((state) => state.user);
+
+  return (
+    <div className="flex flex-col gap-8 mt-8">
         <MovieHolder
           title={"My Reviews"}
           url={`http://localhost:3000/api/lists/watchlist/${user.username}`}
@@ -224,6 +226,26 @@ function Profile() {
           url={`http://localhost:3000/api/lists/watchedMovies/${user.username}`}
         />
       </div>
+  )
+}
+
+function Profile() {
+
+  const user = useSelector((state) => state.user);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const logoutFunc = () => {
+    dispatch(logout());
+    navigate("/");
+  };
+  console.log('profile page re render')
+  return (
+    <div className=" bg-main px-20 relative">
+      <div className="bg-gray-500 h-52 inset-0 absolute w-full z-0"></div>
+    <ProfileOverView/>
+      <ProfileMovies/>
+
+      
       <div className="w-full flex md:justify-evenly flex-col md:flex-row items-center gap-4 shadow-2xl border-accent border-2 p-4">
         <button className={btnClassName}>Change Password</button>
         <button className={btnClassName2}>Delete Account</button>

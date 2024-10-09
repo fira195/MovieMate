@@ -48,8 +48,8 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
         }
 
         const data = await res.json();
-        setResponse(data.data); // Assuming the API response has 'data' property
-        return data?.data
+        setResponse(data.data);  
+        return { data: data?.data, cleanup: () => abortController.abort() };   
       } catch (error) {
         if (error.name !== "AbortError") {
           toast.error(error.message );
@@ -60,9 +60,8 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
       }
     };
 
-    performFetch();
-
-    return () => abortController.abort(); // Clean up if the component unmounts
+    const result = await performFetch(); // Start fetch
+    return result;  
   }, []);
 
   return { loading, error, response, fetchData };
