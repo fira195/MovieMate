@@ -3,17 +3,18 @@ import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { generateTokens } from "../utils/genereteTokens.js";
 import { sendEmail } from "../utils/changePassword.js";
+import { CustomError } from "../utils/customError.js";
+import { validateUserLogin } from "../utils/validations.js";
 
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
   const { username, password } = req.body;
 
   try {
-    if (!username && !password)
-      return res.status(400).json({ message: "Invalid User Information" });
+    const validation=await validateUserLogin({username, password})
 
     const existingUser = await User.findOne({ username });
     if (existingUser) {
-      return res.status(400).json({ message: "Username already exists" });
+      throw new CustomError("Userna me already exists", 400);
     }
 
     const salt = await bcrypt.genSalt(10);
@@ -26,7 +27,7 @@ export const register = async (req, res) => {
 
     await newUser.save();
 
-    const { refreshToken, accessToken } = generateTokens(user);
+    const { refreshToken, accessToken } = generateTokens(newUser);
 
     res.cookie("refreshToken", refreshToken, {
       httpOnly: true,
@@ -34,32 +35,33 @@ export const register = async (req, res) => {
       sameSite: "Strict",
     });
     res.status(200).json({
-      message: "Login successful",
+      message: "Registration successful",
       accessToken,
       user: {
-        id: user._id,
-        username: user.username,
+        id: newUser._id,
+        username: newUser.username,
       },
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Server error" });
+    next(error);
   }
 };
-
-// Login
-export const login = async (req, res) => {
+export const login = async (req, res, next) => {
   const { username, password } = req.body;
 
   try {
+    //validate the user input using a func, will throw errror by itself if it fails
+    const validation=await validateUserLogin({username, password})
+
+
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      throw new CustomError("Invalid Username or Password", 400);
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ message: "Invalid credentials" });
+      throw new CustomError("Invalid Password", 401);
     }
 
     const { refreshToken, accessToken } = generateTokens(user);
@@ -81,36 +83,29 @@ export const login = async (req, res) => {
       },
     });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Server error" });
+    next(error);
   }
 };
-
-export const editProfile = async (req, res) => {
+export const editProfile = async (req, res, next) => {
   try {
     const { username } = req.params;
-
     const { username: newUsername, bio, password } = req.body;
+
     if (!username || !password) {
-      return res
-        .status(400)
-        .json({ data: { message: "Missing required fields" } });
+      throw new CustomError("Missing required fields", 400);
     }
+
     const user = await User.findOne({ username });
     if (!user) {
-      return res.status(400).json({ data: { message: "Invalid credentials" } });
+      throw new CustomError("Invalid credentials", 400);
     }
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
-      return res.status(400).json({ data: { message: "Invalid credentials" } });
-    }
-    if (!newUsername && !bio) {
-      return res
-        .status(400)
-        .json({ data: { message: "No fields to update provided" } });
+      throw new CustomError("Invalid credentials", 400);
     }
 
+ 
     if (newUsername) user.username = newUsername;
     if (bio) user.bio = bio;
 
@@ -118,108 +113,98 @@ export const editProfile = async (req, res) => {
 
     res.status(200).json({
       data: {
-        message: "User Update successful",
+        message: "User update successful",
         user: {
           username: user.username,
           bio: user.bio,
         },
       },
     });
-  } catch (e) {
-    console.log(e);
-    res.status(500).json({ data: { message: "Server Error" } });
+  } catch (error) {
+    next(error);
   }
 };
-export const profile = async (req, res) => {
-  res.send("profile");
-};
-
-export const logout = (req, res) => {
+export const logout = (req, res, next) => {
   try {
-    // Clear the refreshToken cookie
     res.clearCookie("refreshToken", {
       httpOnly: true,
       secure: false,
       sameSite: "Strict",
     });
 
-    res.status(200).json({ data: { message: "Logout successful" } });
+    res.status(200).json({ data: { message: "Logout success ful" } });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ data: { message: "Server error" } });
+    next(new CustomError("Server error", 500));
   }
 };
-
-export const refreshToken = async (req, res) => {
+export const refreshToken = async (req, res, next) => {
   try {
     const refreshToken = req.cookies.refreshToken;
-    console.log('refreshToken', refreshToken)
-    if (!refreshToken)      
-      return res.status(403).json({ message: "No refresh token provided" });
+
+    if (!refreshToken) {
+      throw new CustomError("No refresh token provided", 403);
+    }
 
     const decoded = jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET);
 
     const newAccessToken = jwt.sign(
       { userId: decoded.userId },
       process.env.ACCESS_TOKEN_SECRET,
-      { expiresIn: 60 }
+      { expiresIn: "60s" }
     );
 
-    res.json({data:{ accessToken: newAccessToken,  }});
-  } catch (e) {
-    console.error(e);
-    res.status(401).json({data:{ message: "Invalid refresh token" }});
+    res.json({ data: { accessToken: newAccessToken } });
+  } catch (error) {
+    next(new CustomError("Invalid refresh token", 401));
   }
 };
-
-export const resetPassword = async (req, res) => {
+export const resetPassword = async (req, res, next) => {
   try {
     const { password } = req.body;
     const { username, token } = req.params;
+    
+    if (!username || !password || !token) {
+      throw new CustomError("Missing required fields", 400);
+    }
 
-    // Verify the token
     const decoded = jwt.verify(token, process.env.PASSWORD_RESET_SECRET);
 
-    // Check if the token's username matches the request's username
     if (decoded.username !== username) {
-      return res.status(400).json({ data: { message: "User Not Found" } });
+      throw new CustomError("User Not Found", 400);
     }
 
-    // Await the result of finding the user
     const user = await User.findOne({ username });
-
     if (!user) {
-      return res.status(400).json({ data: { message: "User Not Found" } });
+      throw new CustomError("User Not Found", 400);
     }
 
-    // Hash the new password
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
-    // Update the user's password
     user.password = hashedPassword;
-
-    // Save the updated user document
     await user.save();
 
-    // Respond with success
     res
       .status(200)
       .json({ data: { message: "Password is updated successfully" } });
-  } catch (e) {
-    console.log(e);
-    res.status(500).json({ data: { message: "Server Error" } });
+  } catch (error) {
+    next(error);
   }
 };
-
-export const forgotPassword = (req, res) => {
+export const forgotPassword = async (req, res, next) => {
   try {
     const { username } = req.params;
     const { email } = req.body;
 
-    const user = User.findOne({ username });
-    if (!user)
-      return res.status(400).json({ data: { message: "User Not Found" } });
+    
+    if (!username || !email) {
+      throw new CustomError("Missing required fields", 400);
+    }
+
+    const user = await User.findOne({ username });
+    if (!user) {
+      throw new CustomError("User Not Found", 400);
+    }
 
     const token = jwt.sign({ username }, process.env.PASSWORD_RESET_SECRET, {
       expiresIn: "5m",
@@ -229,14 +214,18 @@ export const forgotPassword = (req, res) => {
       to: email,
       subject: "Reset MovieMate Password",
       html: `
-    Reset your password using this link
-    http://localhost:5173/reset-password/${username}/${token}`,
+        Reset your password using this link
+        http://localhost:5173/reset-password/${username}/${token}`,
     });
+
     res
       .status(200)
       .json({ data: { message: "Please Check Your Email For Reset Link" } });
-  } catch (e) {
-    console.log(e);
-    res.status(500).json({ data: { message: "Server Error" } });
+  } catch (error) {
+    next(error);
   }
+};
+
+export const profile = async (req, res) => {
+  res.send("profile");
 };

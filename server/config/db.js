@@ -1,5 +1,6 @@
 
 import mongoose from "mongoose";
+import { CustomError } from "../utils/customError.js";
 const connectDB = async () => {
     try {
       await mongoose.connect(process.env.MONGO_URI, {
@@ -8,7 +9,7 @@ const connectDB = async () => {
       });
       console.log('Connected to MongoDB');
     } catch (error) {
-      console.error('Error connecting to MongoDB:', error);
+      throw new CustomError(error)
     }
   };
 export default connectDB

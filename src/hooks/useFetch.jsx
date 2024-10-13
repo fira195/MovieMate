@@ -9,7 +9,7 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
   const {refreshToken} = useRefreshToken();
 
   const fetchData = useCallback(async (url, method, body) => {
-    let tokenRefreshAttempted = false;  // Reset token refresh flag per request
+    let tokenRefreshAttempted = false;   
     const abortController = new AbortController();
 
     const performFetch = async () => {
@@ -38,9 +38,9 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
             const success = await refreshToken();
             console.log('khkjgkhjg',success)
             if (success===true) {
-              return performFetch(); // Retry the request after refreshing the token
+              return performFetch();  
             } else {
-              throw new Error("Failed to refresh token Login Again");
+              throw new Error(res.statusText);
             }
           } else {
             throw new Error(res.statusText);

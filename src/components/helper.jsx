@@ -1,5 +1,49 @@
 import { useEffect, useState } from "react";
 
+function Accordion() {
+  const [open, setOpen] = useState(false);
+  const contentRef = useRef(null);
+  const [height, setHeight] = useState("0px");
+
+  useEffect(() => {
+    if (contentRef.current) {
+      //added 32 to account for the p-4 of the div
+      const newHeight = open
+        ? `${contentRef.current.scrollHeight + 32}px`
+        : "0px";
+      setHeight(newHeight);
+    }
+  }, [open]);
+
+  return (
+    <div className="w-full mt-8 border-2 border-black">
+      <h1
+        onClick={() => setOpen((prev) => !prev)}
+        className="text-xl font-bold cursor-pointer p-4 border  2 border-black"
+      >
+        My Account
+      </h1>
+      <div
+        ref={contentRef}
+        style={{ height }}
+        className={` gap-3 font-bold flex flex-col overflow-hidden transition-all duration-300 ${
+          open ? "p-4" : "p-0"
+        }`}
+      >
+        <div className="p-4 border-2 hover:scale-[101%] transition duration-300 cursor-pointer">
+          Change Password
+        </div>
+        <div className="p-4 border-2 border-black hover:scale-[101%] transition duration-300 cursor-pointer">
+          Delete Account
+        </div>
+        <div className="p-4 border-2 border-black hover:scale-[101%] transition duration-300 cursor-pointer">
+          Logout
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function Scroller({ containerRef }) {
   const [state, setState] = useState({left: null, right: null});
 

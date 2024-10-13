@@ -1,86 +1,63 @@
 import Movie from "../models/movieModel.js";
+import {
+  ombd_base_url,
+  ombd_options,
+  tmbd_endpoints,
+  tmbd_options,
+  ytTrailer_url,
+} from "../utils/apiUri.js";
+import { fetchMovieDetails } from "../utils/fetchMovieDetails.js";
+import { getTrailer } from "../utils/getYtTrailer.js";
 
 // Fetch movie Detail
-export const getDetail = async (req, res) => {
-  const options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization: `Bearer ${process.env.TMBD_KEY}`,
-    },
-  };
-  const ombd_options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-    },
-  };
-  const fetchDetailParts = async (uri, options) => {
-    const response = await fetch(uri, options);
-    const ratings = await response.json();
-    return ratings;
-  };
+export const getDetail = async (req, res, next) => {
+
   try {
     const { movieId } = req.params;
 
     //fetch imbd id from tmbd
-    const response = await fetch(
-      `https://api.themoviedb.org/3/movie/${movieId}`,
-      options
-    );
+    const movieDetailsUrl = tmbd_endpoints.movieDetails(movieId);
+    const response = await fetch(movieDetailsUrl, tmbd_options, next);
     const movie = await response.json();
     
-   
     // Check if imdb_id exists before fetching from OMDb API
     if (!movie.imdb_id) throw Error("Movie not found");
+    
+    const movieCreditsUrl=tmbd_endpoints.movieCredits(movieId)
+    const movieRecommendationUrl=tmbd_endpoints.movieRecommendations(movieId)
+    const movieVideoUrl=tmbd_endpoints.movieVideos(movieId)
+    const ombdUrl=ombd_base_url(movie)
     const [credits, similarMovies, videoData, ratings] = await Promise.all([
       // Fetch credits from TMDb API
-      fetchDetailParts(
-        `https://api.themoviedb.org/3/movie/${movie.id}/credits?language=en-US`,
-        options
-      ),
+      fetchMovieDetails(movieCreditsUrl, tmbd_options, next),
       //Fetch similar movies from TBDb
-      fetchDetailParts(
-        `https://api.themoviedb.org/3/movie/${movie.id}/recommendations?language=en-US&page=1`,
-        options
-      ),
+      fetchMovieDetails(movieRecommendationUrl, tmbd_options, next),
       // Fetch video information from TMDb (assuming video link is in trailers)
-      fetchDetailParts(
-        `https://api.themoviedb.org/3/movie/${movie.id}/videos?&language=en-US`,
-        options
-      ),
+      fetchMovieDetails(movieVideoUrl, tmbd_options, next),
       //fetch ratings from ombd
-      fetchDetailParts(
-        `http://www.omdbapi.com/?i=${movie.imdb_id}&apikey=${"90a5e067"}`,
-        ombd_options
-      ),
+      fetchMovieDetails(ombdUrl, ombd_options, next),
     ]);
     
-   
     // Extract YouTube video ID from the first trailer (optional)
-    const getTrailer = () => {
-      let youtubeUrl = null;
-      if (videoData.results && videoData.results.length > 0) {
-        const trailer = videoData.results.find(
-          (video) => video.type === "Trailer" && video.site === "YouTube"
-        );
-        if (trailer) {
-          youtubeUrl = `https://www.youtube.com/embed/${trailer.key}`;
-        }
-        return youtubeUrl;
-      }
-    };
-   
-    const youtubeUrl = getTrailer();
+    
+    console.log(similarMovies)
+    const youtubeUrl = getTrailer(videoData);
     res.status(200).json({
-      data: { ...ratings, credits, youtubeUrl, similarMovies, movie, tmbdId: movieId },
+      data: {
+        ...ratings,
+        credits,
+        youtubeUrl,
+        similarMovies,
+        movie,
+        tmbdId: movieId,
+      },
     }); // Combine data with credits and video URL
   } catch (error) {
-    console.error("Error fetching data:", error);
+    next(error);
   }
 };
 
-export const searchMovie = async (req, res) => {
+export const searchMovie = async (req, res, next) => {
   try {
     const { searchTerm, currentPage } = req.params;
     const response = await fetch(
@@ -89,20 +66,21 @@ export const searchMovie = async (req, res) => {
         headers: {
           accept: "application/json",
           Authorization: `Bearer ${process.env.TMBD_KEY}`,
-        }
+        },
       }
     );
     if (!response.ok) throw Error("COuldnt Fetch Movies...");
-    const resJson=await response.json();
+    const resJson = await response.json();
     const movies = resJson.results;
     let total_pages = resJson.total_pages;
-    res.status(200).json({data: { movies: movies, total_pages: total_pages }});
+    res
+      .status(200)
+      .json({ data: { movies: movies, total_pages: total_pages } });
   } catch (error) {
-    res.status(500).json({ message: "Server Error" });
-    console.error("Error fetching data:", error);
+    next(error);
   }
 };
-export const getTopRated = async (req, res) => {
+export const getTopRated = async (req, res, next) => {
   try {
     const response = await fetch(
       `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=${
@@ -116,14 +94,13 @@ export const getTopRated = async (req, res) => {
       }
     );
     const json = await response.json();
-    res.status(200).json({data: json});
+    res.status(200).json({ data: json });
   } catch (e) {
-    console.log(e);
-    res.status(500).json({ message: "Server Error" });
+    next(e);
   }
 };
 ////Correct this
-export const getTreding = async (req, res) => {
+export const getTreding = async (req, res, next) => {
   try {
     const response = await fetch(
       `https://api.themoviedb.org/3/movie/top_rated?language=en-US&page=1`,
@@ -135,14 +112,13 @@ export const getTreding = async (req, res) => {
       }
     );
     const json = await response.json();
-    res.status(200).json({data: json});
+    res.status(200).json({ data: json });
   } catch (e) {
-    console.log(e);
-    res.status(500).json({ message: "Server Error" });
+    next(e);
   }
 };
 
-export const getGenreMovies = async (req, res) => {
+export const getGenreMovies = async (req, res, next) => {
   try {
     const { genreId } = req.params;
 
@@ -158,14 +134,12 @@ export const getGenreMovies = async (req, res) => {
       }
     );
     const json = await response.json();
-    res.status(200).json({data: json});
+    res.status(200).json({ data: json });
   } catch (e) {
-    console.log(e);
-    res.status(500).json({ message: "Server Error" });
+    next(e);
   }
 };
-
-export const getGenres = async (req, res) => {
+export const getGenres = async (req, res, next) => {
   try {
     const response = await fetch(
       "https://api.themoviedb.org/3/genre/movie/list?language=en-US",
@@ -179,7 +153,6 @@ export const getGenres = async (req, res) => {
     const json = await response.json();
     res.status(200).json(json);
   } catch (e) {
-    console.log(e);
-    res.status(500).json({ message: "Server Error" });
+    next(e);
   }
 };

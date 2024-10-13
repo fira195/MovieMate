@@ -225,7 +225,7 @@ function SimilarMovies({ similarMovies }) {
       </div>
       <div className="border-2 border-black flex flex-wrap gap-6 md:p-4 p-0 justify-evenly">
         {similarMovies ? (
-          similarMovies.results.map((item, key) => (
+          similarMovies?.results?.map((item, key) => (
             <MovieCard key={key} movie={item} />
           ))
         ) : (

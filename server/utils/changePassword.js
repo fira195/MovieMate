@@ -1,4 +1,5 @@
 import nodeMailer from 'nodemailer'
+import { CustomError } from './customError.js'
 const transport = nodeMailer.createTransport({
     secure: true,
     host: 'smtp.gmail.com',
@@ -14,7 +15,7 @@ export const sendEmail=(mailOptions)=>{
     console.log(process.env.EMAIL_SENDER, process.env.GOOGLE_APP_PASSWORD)
     transport.sendMail(mailOptions, function(error, info){
     if (error) {
-      console.log(error);
+      throw new CustomError(error)
     } else {
       console.log('Email sent: ' + info?.response);
     }
