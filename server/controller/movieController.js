@@ -1,47 +1,64 @@
 import Movie from "../models/movieModel.js";
 import {
   ombd_base_url,
-  ombd_options,
   tmbd_endpoints,
-  tmbd_options,
   ytTrailer_url,
 } from "../utils/apiUri.js";
+import { CustomError } from "../utils/customError.js";
 import { fetchMovieDetails } from "../utils/fetchMovieDetails.js";
 import { getTrailer } from "../utils/getYtTrailer.js";
 
 // Fetch movie Detail
 export const getDetail = async (req, res, next) => {
 
+  //i dont know why but i cant move the api opitions to another file the authorization .env doesnt work properly or something 
+   const tmbd_options = {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      Authorization: `Bearer ${process.env.TMBD_KEY}`,
+    },
+  };
+   const ombd_options = {
+    method: "GET",
+    headers: {
+      accept: "application/json",
+      Authorization: `Bearer ${process.env.OMDB_API_KEY}`,
+    },
+  };
+
+
   try {
+    //using both tmbd api and ombd api because the tmbd api does provide imbd rating
     const { movieId } = req.params;
 
-    //fetch imbd id from tmbd
+    //fetch imbd movie id from tmbd api
     const movieDetailsUrl = tmbd_endpoints.movieDetails(movieId);
-    const response = await fetch(movieDetailsUrl, tmbd_options, next);
-    const movie = await response.json();
+    const movie = await fetchMovieDetails(movieDetailsUrl, tmbd_options, next);
     
-    // Check if imdb_id exists before fetching from OMDb API
-    if (!movie.imdb_id) throw Error("Movie not found");
+    // Check if imdb_id exists before fetching movie detail from OMDb API
+    if (!movie.imdb_id) throw new CustomError("Movie IMBD ID not found");
     
     const movieCreditsUrl=tmbd_endpoints.movieCredits(movieId)
     const movieRecommendationUrl=tmbd_endpoints.movieRecommendations(movieId)
     const movieVideoUrl=tmbd_endpoints.movieVideos(movieId)
     const ombdUrl=ombd_base_url(movie)
+
+    //fetch all the movie details from different api endpoints
     const [credits, similarMovies, videoData, ratings] = await Promise.all([
-      // Fetch credits from TMDb API
+      // fetch credits from TMDb API
       fetchMovieDetails(movieCreditsUrl, tmbd_options, next),
-      //Fetch similar movies from TBDb
+      //Fetch similar movies from TBDb api
       fetchMovieDetails(movieRecommendationUrl, tmbd_options, next),
-      // Fetch video information from TMDb (assuming video link is in trailers)
+      // Fetch video information from TMDb to get the trailer
       fetchMovieDetails(movieVideoUrl, tmbd_options, next),
-      //fetch ratings from ombd
+      //fetch ratings from ombd api
       fetchMovieDetails(ombdUrl, ombd_options, next),
     ]);
     
-    // Extract YouTube video ID from the first trailer (optional)
-    
-    console.log(similarMovies)
-    const youtubeUrl = getTrailer(videoData);
+    // get YouTube video key from the videos returned from the tmbd api
+    const youtubeUrl =await getTrailer(videoData);
+
     res.status(200).json({
       data: {
         ...ratings,
@@ -51,7 +68,7 @@ export const getDetail = async (req, res, next) => {
         movie,
         tmbdId: movieId,
       },
-    }); // Combine data with credits and video URL
+    });  
   } catch (error) {
     next(error);
   }
@@ -134,6 +151,7 @@ export const getGenreMovies = async (req, res, next) => {
       }
     );
     const json = await response.json();
+    console.log(json)
     res.status(200).json({ data: json });
   } catch (e) {
     next(e);

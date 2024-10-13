@@ -5,21 +5,7 @@ export const ytTrailer_url=(trailer)=>`https://www.youtube.com/embed/${trailer.k
 
 export const tmbd_endpoints={
     movieDetails: (movieId)=>`${tmbd_base_url}${movieId}`,
-    movieCredits: (movieId)=>`${tmbd_base_url}movie/${movieId}/credits?language=en-US`,
-    movieRecommendations: (movieId)=>`${tmbd_base_url}movie/${movieId}/recommendations?language=en-US&page=1`,
-    movieVideos:(movieId)=> `${tmbd_base_url}/${movieId}videos?&language=en-US`,
+    movieCredits: (movieId)=>`${tmbd_base_url}${movieId}/credits?language=en-US`,
+    movieRecommendations: (movieId)=>`${tmbd_base_url}${movieId}/recommendations?language=en-US&page=1`,
+    movieVideos:(movieId)=> `${tmbd_base_url}${movieId}/videos`,
 }
-export const tmbd_options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization: `Bearer ${process.env.TMBD_KEY}`,
-    },
-  };
-  export const ombd_options = {
-    method: "GET",
-    headers: {
-      accept: "application/json",
-      Authorization: `Bearer ${process.env.OMDB_API_KEY}`,
-    },
-  };
