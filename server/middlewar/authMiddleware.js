@@ -2,6 +2,11 @@ import jwt from 'jsonwebtoken';
 import { CustomError } from '../utils/customError.js';
 
 export const authenticate = (req, res, next) => {
+
+  console.log(req.url)
+  const protectedRoutes=['/api/movie/movie']
+  const protectedRoute=false
+  
   // Get the token from the Authorization header
   const authHeader = req.header('Authorization');
   if (!authHeader) throw new CustomError('No token, authorization denied', 401 );

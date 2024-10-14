@@ -7,12 +7,14 @@ import cookieParser from 'cookie-parser';
 import connectDB from './config/db.js';
 import cors from 'cors'
 import { errorHandler } from './middlewar/errorHandling.js';
+import { authenticate } from './middlewar/authMiddleware.js';
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
+app.use(authenticate)
 
 app.use(cors({
     origin: 'http://localhost:5173', // Frontend origin
