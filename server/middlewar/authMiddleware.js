@@ -3,12 +3,12 @@ import { CustomError } from '../utils/customError.js';
 
 export const authenticate = (req, res, next) => {
 
-  console.log(req.url)
-  const protectedRoutes=['/api/movie/movie']
-  const protectedRoute=false
+  if (!req.path.endsWith('/protected'))return next()
+  console.log('protexted')
   
   // Get the token from the Authorization header
   const authHeader = req.header('Authorization');
+  console.log(authHeader)
   if (!authHeader) throw new CustomError('No token, authorization denied', 401 );
 
   // Extract the token from the Authorization header

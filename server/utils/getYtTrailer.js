@@ -13,5 +13,3 @@ export const getTrailer = async(videoData) => {
     }
   };
 
-
-  ['/api/users/logout', 'forgot-password/']

@@ -18,8 +18,8 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
         method,
         headers: {
           accept: "application/json",
-          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
         },
         credentials:'include',
         body: body ? JSON.stringify(body) : undefined,
@@ -34,9 +34,7 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
           if (res.status === 401 && !tokenRefreshAttempted) {
             // Try refreshing the token only once
             tokenRefreshAttempted = true;
-            console.log(typeof refreshToken)
             const success = await refreshToken();
-            console.log('khkjgkhjg',success)
             if (success===true) {
               return performFetch();  
             } else {

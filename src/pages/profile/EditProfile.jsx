@@ -28,14 +28,14 @@ function EditProfile({onClick}) {
       onSubmit: async (values) => {
         try {
           const updateResponse=await fetchData(
-            `http://localhost:3000/api/users/update/${user.username}`,
+            `http://localhost:3000/api/users/update/${user.username}/protected`,
             "POST",
             values
           );
           if (updateResponse) {
             console.log('sdfg',updateResponse.data)
             const updatedUser=await fetchData(
-              "http://localhost:3000/api/users/login",
+              "http://localhost:3000/api/users/login/protected",
               "POST",
               formik.values
             );
