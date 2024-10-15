@@ -5,6 +5,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import useDrag from "../../hooks/useDrag";
 import { btnClassName, btnClassName2 } from "../../utils/css";
+import useFetchData2 from "../../hooks/useFetch2.0";
 
 function EditProfile({onClick}) {
     const user = useSelector((state) => state.user);
@@ -56,6 +57,9 @@ function EditProfile({onClick}) {
       },
     });
     const { ref, position } = useDrag();
+
+
+
   
     return (
       <form

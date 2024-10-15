@@ -12,6 +12,7 @@ import { useNavigate } from "react-router-dom";
 import EditProfile from "./EditProfile";
 import ProfileMovies from "./ProfileMovies";
 import ProfileOverView from "./ProfileOverView";
+import useFetchData2 from "../../hooks/useFetch2.0";
 
 
 
@@ -22,6 +23,17 @@ function Profile() {
     dispatch(logout());
     navigate("/");
   };
+  const {fetchData2, error}=useFetchData2()
+  useEffect(()=>{
+    const fetch=async()=>{
+
+      console.log('re')
+      const res=await fetchData2('get','/api/lists/watchlist/l/protected')
+      console.log(res)
+      
+    }
+    fetch()
+  },[])
   console.log("profile page re render");
   return (
     <div className=" bg-main px-20 relative">

@@ -3,19 +3,20 @@ import MovieHolder from "../components/MovieHolder";
 import { useFormik } from "formik";
 import { btnClassName, btnClassName2  } from "../utils/css";
 
+
 function Home() {
   const data = [
     {
       title: "Trending Movies",
-      url: "http://localhost:3000/api/movies/trending",
+      url: "/api/movies/trending",
     },
     {
       title: "Top Rated",
-      url: "http://localhost:3000/api/movies/top-rated",
+      url: "/api/movies/top-rated",
     },
     {
       title: "Liked Movies",
-      url: "http://localhost:3000/api/movies/trending",
+      url: "/api/movies/trending",
     },
   ];
 
@@ -26,8 +27,6 @@ function Home() {
       navigate(`/search/${formik.values.searchQuery}`);
     },
   });
-
-
   return (
     <div className="bg-main h-auto px-10 md:px-20 pt-20">
       <div className="grid lg:grid-cols-12 md:grid-cols-8 sm:grid-cols-4 font-semibold items-center">

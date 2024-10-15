@@ -6,10 +6,10 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [response, setResponse] = useState(null);
-  const {refreshToken} = useRefreshToken();
+  const { refreshToken } = useRefreshToken();
 
   const fetchData = useCallback(async (url, method, body) => {
-    let tokenRefreshAttempted = false;   
+    let tokenRefreshAttempted = false;
     const abortController = new AbortController();
 
     const performFetch = async () => {
@@ -21,7 +21,7 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",
         },
-        credentials:'include',
+        credentials: "include",
         body: body ? JSON.stringify(body) : undefined,
         signal: abortController.signal,
       };
@@ -35,8 +35,8 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
             // Try refreshing the token only once
             tokenRefreshAttempted = true;
             const success = await refreshToken();
-            if (success===true) {
-              return performFetch();  
+            if (success === true) {
+              return performFetch();
             } else {
               throw new Error(res.statusText);
             }
@@ -46,11 +46,11 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
         }
 
         const data = await res.json();
-        setResponse(data.data);  
-        return { data: data?.data, cleanup: () => abortController.abort() };   
+        setResponse(data.data);
+        return { data: data?.data, cleanup: () => abortController.abort() };
       } catch (error) {
         if (error.name !== "AbortError") {
-          toast.error(error.message );
+          toast.error(error.message);
           setError(error.message);
         }
       } finally {
@@ -59,7 +59,7 @@ function useFetchData(initialUrl, initialMethod, initialBody) {
     };
 
     const result = await performFetch(); // Start fetch
-    return result;  
+    return result;
   }, []);
 
   return { loading, error, response, fetchData };
