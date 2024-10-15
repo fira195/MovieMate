@@ -12,18 +12,17 @@ import { authenticate } from './middlewar/authMiddleware.js';
 dotenv.config();
 
 const app = express();
+app.use(cors({
+  origin:'http://localhost:5173',
+  credentials:true,
+}));
 app.use(express.json());
 app.use(cookieParser());
 app.use(authenticate)
 
-app.use(cors({
-    origin: 'http://localhost:5173', // Frontend origin
-    credentials: true, // Allow credentials (cookies)
-  }));
 // Connect to MongoDB
 connectDB()
 
-// Use Routes
 app.use('/api/users', userRoutes);
 app.use('/api/movies', movieRoutes);
 app.use('/api/lists', listRoutes);
