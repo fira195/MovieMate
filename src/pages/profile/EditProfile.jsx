@@ -9,7 +9,7 @@ import useFetchData2 from "../../hooks/useFetch2.0";
 
 function EditProfile({onClick}) {
     const user = useSelector((state) => state.user);
-    const { loading, err, response, fetchData } = useFetchData();
+    const {loading,fetchData ,error}=useFetchData2()
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const formik = useFormik({
@@ -29,14 +29,14 @@ function EditProfile({onClick}) {
       onSubmit: async (values) => {
         try {
           const updateResponse=await fetchData(
-            `http://localhost:3000/api/users/update/${user.username}/protected`,
+            `/users/update/${user.username}/protected`,
             "POST",
             values
           );
           if (updateResponse) {
             console.log('sdfg',updateResponse.data)
             const updatedUser=await fetchData(
-              "http://localhost:3000/api/users/login/protected",
+              "/users/login/protected",
               "POST",
               formik.values
             );
@@ -57,9 +57,6 @@ function EditProfile({onClick}) {
       },
     });
     const { ref, position } = useDrag();
-
-
-
   
     return (
       <form

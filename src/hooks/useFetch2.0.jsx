@@ -1,20 +1,32 @@
-import axios from "axios";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { api } from "../utils/api";
-function useFetchData2() {
+import { toast } from "sonner";
+function useFetchData() {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState([]);
-  const fetchData2 = async (method, url, body) => {
-    const token = localStorage.getItem("accessToken");
 
+  const fetchData = useCallback(async (method, url, body) => {
+    const abortController = new AbortController();
+    setLoading(true);
     try {
-      const res = await api.get(url);
-      return res?.data
+      let res = null;
+      if (method === "GET")
+        res = await api.get(url, { signal: abortController.signal });
+      if (method === "POST")
+        res = await api.post(url, { signal: abortController.signal });
+      return res.data;
     } catch (err) {
-      setError(err);
+      console.log(err);
+      if (err.status !== 403) {
+        const errorMessage =
+          err.response?.data?.data?.message || "Something went wrong";
+        toast.error(errorMessage);
+        setError(errorMessage);
+      }
+    } finally {
+      setLoading(false);
     }
-  };
-  return { loading, error, fetchData2 };
+  }, []);
+  return { loading, error, fetchData };
 }
-export default useFetchData2;
+export default useFetchData;

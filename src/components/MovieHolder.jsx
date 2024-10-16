@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import MovieCard from "./MovieCard";
 import Loading, { Scroller } from "./helper";
-import useFetchData from "../hooks/useFetch";
+import useFetchData from "../hooks/useFetch2.0";
 import { btnClassName } from "../utils/css";
 
 function MovieHolder({ title, url }) {
@@ -13,7 +13,7 @@ function MovieHolder({ title, url }) {
     let isMounted = true;  
 
     const fetchDataAsync = async () => {
-      const data = await fetchData(url, "GET");  
+      const data = await fetchData('GET', url);  
       if (isMounted && data?.data) {
         setResponse(data.data);  
       }

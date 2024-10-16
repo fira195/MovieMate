@@ -8,15 +8,15 @@ function ProfileMovies(){
       <div className="flex flex-col gap-8 mt-8">
           <MovieHolder
             title={"My Reviews"}
-            url={`http://localhost:3000/api/lists/watchlist/${user.username}/protected`}
+            url={`/lists/watchlist/${user.username}/protected`}
           />
           <MovieHolder
             title={"Watchlist"}
-            url={`http://localhost:3000/api/lists/watchlist/${user.username}/protected`}
+            url={`/lists/watchlist/${user.username}/protected`}
           />
           <MovieHolder
             title={"Watched"}
-            url={`http://localhost:3000/api/lists/watchedMovies/${user.username}/protected`}
+            url={`/lists/watchedMovies/${user.username}/protected`}
           />
         </div>
     )
