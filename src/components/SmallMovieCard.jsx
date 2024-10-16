@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import Loading from "./helper";
-import useFetchData from "../hooks/useFetch";
+import useFetchData from "../hooks/useFetch2.0";
 
 function SmallMovieCard({ title, releaseDate, tmbdId, ratings, posterPath, username, url, updataList }) {
   const { response, err, loading, fetchData } = useFetchData();
@@ -44,17 +44,13 @@ function SmallMovieCard({ title, releaseDate, tmbdId, ratings, posterPath, usern
   };
   const handleRemoveFromList = async (e) => {
     e.stopPropagation();
-      fetchData(`http://localhost:3000/api/lists/${url}/${username}`, "DELETE", {
+      const response=await fetchData("DELETE",`/lists/${url}/${username}`, {
       movieId: tmbdId,
     });
+    console.log(response)
+    toast.success(response.data)
   };
 
-  useEffect(() => {
-    if (response) {
-      updataList()
-      toast.success(response.message);
-    }
-  }, [response]);
 
   return (
     <div

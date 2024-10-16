@@ -1,10 +1,8 @@
 import { useFormik } from "formik";
-import { useState } from "react";
 import * as Yup from "yup";
 import { btnClassName } from "../utils/css";
 
 function About() {
-
   const formik = useFormik({
     initialValues: {
       email: "",
@@ -19,6 +17,7 @@ function About() {
       console.log("Form values:", values);
     },
   });
+
   return (
     <div className="min-h-screen bg-main relative  p-5 md:px-20">
       <div className="bg-gray-500 h-52 absolute w-full z-0 inset-0 flex items-center">
@@ -82,7 +81,7 @@ function About() {
           <button className={btnClassName}>Send Now</button>
           <div className="flex justify-center items-center gap-4 mt-6 bg-thrid p-4">
           <a
-            href="https://www.linkedin.com/in/your-profile"
+            href="https://www.linkedin.com/"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -93,7 +92,7 @@ function About() {
             />
           </a>
           <a
-            href="https://github.com/your-profile"
+            href="https://github.com/"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -103,7 +102,7 @@ function About() {
               className="w-6 h-6 hover:scale-105 transition"
             />
           </a>
-          <a href="mailto:your-email@example.com">
+          <a href="mailto:">
             <img
               src="/gmail.png"
               alt="Email"

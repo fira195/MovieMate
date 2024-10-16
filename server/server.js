@@ -27,6 +27,11 @@ connectDB()
 app.use('/api/users', userRoutes);
 app.use('/api/movies', movieRoutes);
 app.use('/api/lists', listRoutes);
+app.use('*', (req,res)=>{
+  res.status(404).json({
+    data: {message: 'Requested Resource not found'}
+  })
+});
 
 app.use(errorHandler)
 const PORT = process.env.PORT || 5000;

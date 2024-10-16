@@ -12,7 +12,7 @@ export const api = axios.create({
   },
 });
 
-const refreshToken = async () => {
+const refreshToken = async (originalRequest) => {
   axios
     .post("http://localhost:3000/api/users/refresh-token",{},{
         withCredentials:true
@@ -20,6 +20,7 @@ const refreshToken = async () => {
     .then((response) => {
         console.log('token refreshed')
       localStorage.setItem('accessToken',response?.data?.data?.accessToken);
+      return api(originalRequest)
     })
     .catch((err) => {
         console.log(err)
@@ -31,8 +32,11 @@ const refreshToken = async () => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.status === 403) {
-      refreshToken();
+    const originalRequest=error.config
+    console.log(!originalRequest._retry)
+    if (error.status === 403 && !originalRequest._retry) {
+      originalRequest._retry = true
+      refreshToken(originalRequest);
     }
 
     return Promise.reject(error);
