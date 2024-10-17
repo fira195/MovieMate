@@ -13,9 +13,11 @@ function useFetchData() {
       if (method === "GET")
         res = await api.get(url, { signal: abortController.signal });
       if (method === "POST")
-        res = await api.post(url, { signal: abortController.signal });
+        res = await api.post(url, body, { signal: abortController.signal });
+      if (method === "PUT")
+        res = await api.put(url, body, { signal: abortController.signal });
       if (method === 'DELETE')
-        res = await api.delete(url,body, { signal: abortController.signal });
+        res = await api.delete(url, {data:body, signal: abortController.signal });
       return res.data;
     } catch (err) {
       console.log(err);

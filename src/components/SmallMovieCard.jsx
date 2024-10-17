@@ -4,17 +4,18 @@ import { toast } from "sonner";
 import Loading from "./helper";
 import useFetchData from "../hooks/useFetch2.0";
 
-function SmallMovieCard({ title, releaseDate, tmbdId, ratings, posterPath, username, url, updataList }) {
-  const { response, err, loading, fetchData } = useFetchData();
+function SmallMovieCard({ title, releaseDate, tmbdId, ratings, posterPath, username, url, updateList }) {
+  const { loading, fetchData } = useFetchData();
   const navigate = useNavigate();
   const [playlistView, setPlaylistView] = useState(false);
 
+
+  //handles image states onload and onerror
   const [isImageLoading, setIsImageLoading] = useState(true);
   const [imageHasError, setImageHasError] = useState(false);
   const handleImageLoad = () => {
     setIsImageLoading(false);
   };
-
   const handleImageError = () => {
     setImageHasError(true);
     setIsImageLoading(false);
@@ -39,18 +40,21 @@ function SmallMovieCard({ title, releaseDate, tmbdId, ratings, posterPath, usern
     },
   ]);
 
+  //takes user to the clicked movie
   const handleClick = () => {
     navigate(`/movie/${tmbdId}`);
   };
+
+  //removes movie fom the playlist
   const handleRemoveFromList = async (e) => {
     e.stopPropagation();
-      const response=await fetchData("DELETE",`/lists/${url}/${username}`, {
+      const response=await fetchData("DELETE",`/lists/${url}/${username}/protected`, {
       movieId: tmbdId,
     });
-    console.log(response)
-    toast.success(response.data)
+    toast.success(response?.data?.message)
+    updateList()
   };
-
+console.log(ratings)
 
   return (
     <div

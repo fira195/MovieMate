@@ -38,7 +38,7 @@ function Lists({ url, username, openTitle }) {
               {...item}
               url={url}
               username={username}
-              updataList={asyncFetchMovieLists}
+              updateList={asyncFetchMovieLists}
             />
           ))
         );

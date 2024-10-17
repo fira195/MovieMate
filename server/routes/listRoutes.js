@@ -7,7 +7,7 @@ const router=express.Router()
 router.get('/playlist', getPlaylists)
 
 const createRouteHandler = (controller, routeList) => {
-    return (req, res) => controller(req, res, routeList);
+    return (req, res, next) => controller(req, res, routeList, next);
   };
   
   router.get('/likedMovies/:username/protected',createRouteHandler(getList, 'likedMovies'));

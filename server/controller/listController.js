@@ -5,7 +5,6 @@ import { persistMovie } from "../utils/persistMovie.js";
 import movieModel from "../models/movieModel.js";
 import { CustomError } from "../utils/customError.js";
 
-// Function to get all playlists (currently placeholder)
 
 export const createPlaylist = async (req, res, next) => {
   try {
@@ -29,6 +28,8 @@ export const createPlaylist = async (req, res, next) => {
     next(error)
   }
 };
+
+
 export const getPlaylists = async (req, res,next) => {
   try {
     const { username } = req.params;
@@ -42,6 +43,8 @@ export const getPlaylists = async (req, res,next) => {
 
   }
 };
+
+
 export const getPlaylist = async (req, res, next) => {
   try {
     const { username, playlistID } = req.params;
@@ -66,6 +69,10 @@ export const getPlaylist = async (req, res, next) => {
 
   }
 };
+
+
+
+
 export const updatePlaylist = async (req, res, next) => {
   console.log('asdf')
   try {
@@ -88,17 +95,20 @@ export const updatePlaylist = async (req, res, next) => {
 
   }
 };
+
+
 export const deletePlaylist = async (req, res,next) => {
   try {
     const { username, playlistID } = req.params;
 
     const user = await User.findOne({ username });
     if (!user) throw new CustomError('User Not Found', 404)
+  let indexOfPlaylist=null
+    user.playlists.map((playlist, indx)=>{
+      if(playlist.playlistId===playlistID) indexOfPlaylist=indx+1 
+    })
+    user.playlists.splice(indexOfPlaylist, 1)
 
-    const playlist = user.playlists.id(playlistID);
-    if (!user) throw new CustomError('Playlist Not Found', 404)
-
-    playlist.remove();
     await user.save();
 
     res.status(200).json({data:{ message: "Playlist deleted successfully"} });
@@ -107,6 +117,9 @@ export const deletePlaylist = async (req, res,next) => {
     res.status(500).json({data:{ message: "Server Error"} });
   }
 };
+
+
+
 export const addToPlaylist = async (req, res, next) => {
   try {
     const { username, playlistID } = req.params;
@@ -134,6 +147,9 @@ export const addToPlaylist = async (req, res, next) => {
 
   }
 };
+
+
+
 export const removeFromPlaylist = async (req, res ,next) => {
   try {
      const { username, playlistID, movieId } = req.params;
@@ -148,6 +164,7 @@ export const removeFromPlaylist = async (req, res ,next) => {
     if (movieIndex > -1) {
       playlist.movies.splice(movieIndex, 1);
       await user.save();
+      console.log(playlist.movies)
       res.status(200).json({data:{ message: "Movie removed from playlist", playlist }});
     } else {
       res.status(400).json({data:{ message: "Movie not found in playlist" }});
@@ -159,8 +176,6 @@ export const removeFromPlaylist = async (req, res ,next) => {
 };
 
 
-
-// Function to get a user's watchlist
 export const getList = async (req, res, routeList,next) => {
   try {
     const { username } = req.params;
@@ -185,7 +200,7 @@ export const getList = async (req, res, routeList,next) => {
 
   }
 };
-// Function to add a movie to the user's watchlist
+
 export const  addToList = async (req, res, routeList ,next) => {
   try {
     const { username } = req.params;
@@ -208,22 +223,20 @@ export const  addToList = async (req, res, routeList ,next) => {
 
   }
 };
-// Function to update a user's watchlist (currently placeholder)
+
 export const updateList = async (req, res, routeList,next) => {
   try {
     const { username } = req.params;
-    const { movieId } = req.body; // Assuming movieId is sent in the request body
+    const { movieId } = req.body; 
 
-    // Find the user by username
     const user = await User.findOne({ username });
     if (!user) throw new CustomError('User Not Found', 404)
 
 
-    // Remove the movieId from the watchedMovies array
+    // Remove  movieId from  watchedMovies array
     user[routeList]  =await user[routeList].filter(id => {
       return id  !== parseInt(movieId)
     });
-    // Save the updated user document
     await user.save();
     res.status(200).json({data:{ message: "Movie removed from watched movies" }});
   } catch (e) {

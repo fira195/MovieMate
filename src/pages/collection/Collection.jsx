@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 import { useSelector } from "react-redux";
-import PlaylistBody from "../../components/CollectionPlaylists";
+import PlaylistBody from "./playlist components/PlaylistBody";
 import Lists from "./Lists";
 
 
