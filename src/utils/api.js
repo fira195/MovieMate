@@ -18,13 +18,13 @@ const refreshToken = async (originalRequest) => {
         withCredentials:true
     })
     .then((response) => {
-        console.log('token refreshed')
+      console.log('token refreshed')
       localStorage.setItem('accessToken',response?.data?.data?.accessToken);
       return api(originalRequest)
     })
     .catch((err) => {
         console.log(err)
-      if (err.status === 401)
+      if (err.status === 403)
         return toast.error(err  .response?.data?.data?.message);
       console.log(err);
     });
@@ -33,7 +33,6 @@ api.interceptors.response.use(
   (response) => response,
   (error) => {
     const originalRequest=error.config
-    console.log(!originalRequest._retry)
     if (error.status === 403 && !originalRequest._retry) {
       originalRequest._retry = true
       refreshToken(originalRequest);

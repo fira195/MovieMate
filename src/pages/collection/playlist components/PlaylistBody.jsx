@@ -3,6 +3,7 @@ import useFetchData from "../../../hooks/useFetch2.0";
 import Skeleton from "../Skeleton";
 import NameDescriptionCard from "./NameDescriptionCard";
 import PlaylistCard from "./PlaylistCard";
+import { btnClassName } from "../../../utils/css";
 
 function PlaylistBody({ username }) {
   const {  error, loading, fetchData } = useFetchData();
@@ -94,6 +95,7 @@ function PlaylistBody({ username }) {
         </div>
         {addPlaylistState && (
           <NameDescriptionCard
+          fetchPlaylists={fetchPlaylists}
             addPlaylistStateHandler={addPlaylistStateHandler}
             username={username}
           />

@@ -2,8 +2,10 @@ import { toast } from "sonner";
 import useFetchData from "../../../hooks/useFetch2.0";
 import Loading from "../../../components/helper";
 import { useFormik } from "formik";
+import * as Yup from 'yup'
+import { btnClassName, btnClassName2 } from "../../../utils/css";
 
-function NameDescriptionCard({ addPlaylistStateHandler, username }) {
+function NameDescriptionCard({fetchPlaylists, addPlaylistStateHandler, username }) {
     const { loading, fetchData } = useFetchData();
   
     const formik = useFormik({
@@ -22,16 +24,17 @@ function NameDescriptionCard({ addPlaylistStateHandler, username }) {
       onSubmit: async(values) => {
         const response = await fetchData(
           "POST",
-          `/lists/playlist/${username}`,
+          `/lists/playlist/${username}/protected`,
           values
         );
         toast.success(response?.data?.message)
-        addPlaylistStateHandler();
+        addPlaylistStateHandler()
+        fetchPlaylists()
       },
     });
   
     return (
-      <div className="bg-main shadow-xl absolute z-30  left-1/2 -translate-x-1/2 rounded-md p-6 w-1/3">
+      <div className="bg-main shadow-xl absolute z-30  left-1/2 -translate-x-1/2 rounded-md p-6 lg:w-1/3">
         <h2 className="text-lg font-semibold mb-4">
           Playlist Name & Description
         </h2>
