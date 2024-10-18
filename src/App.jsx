@@ -6,7 +6,7 @@ import Collection from "./pages/collection/Collection";
 import Discover from "./pages/Discover";
 import About from "./pages/About";
 import Landing from "./pages/landing/Landing";
-import Movie from "./pages/Movie";
+import Movie from "./pages/movie/Movie";
 import Error from "./pages/Error";
 import Header from "./components/Header";
 import Footer from "./components/Footer";

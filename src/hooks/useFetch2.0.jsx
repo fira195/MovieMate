@@ -18,6 +18,7 @@ function useFetchData() {
         res = await api.put(url, body, { signal: abortController.signal });
       if (method === 'DELETE')
         res = await api.delete(url, {data:body, signal: abortController.signal });
+      console.log(res.data)
       return res.data;
     } catch (err) {
       console.log(err);
