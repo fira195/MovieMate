@@ -9,8 +9,8 @@ router.post('/login', login);
 router.post('/refresh-token', refreshToken);
 
 router.post('/logout/protected', logout);
-router.post ('/forgot-password/:username/protected', forgotPassword);
-router.post('/reset-password/:username/:token/protected', resetPassword);
+router.post ('/forgot-password/:username', forgotPassword);
+router.post('/reset-password/:username/:token', resetPassword);
 router.post('/profile/protected',  profile);
 router.post('/update/:username/protected', editProfile);
 //router.post('/profile',authenticate, login);

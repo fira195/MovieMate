@@ -1,23 +1,27 @@
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import Loading from "../components/helper";
-import useFetchData from "../hooks/useFetch";
+import useFetchData from "../hooks/useFetch2.0";
 import { toast } from "sonner";
 import { useParams } from "react-router-dom";
 function ForgotPassword() {
-  const { loading, response, err, fetchData } = useFetchData();
+  const { loading, error, fetchData } = useFetchData();
   const formik = useFormik({
-    initialValues: { email: "" , username: ''},
+    initialValues: { email: "", username: "" },
     validationSchema: Yup.object({
-        username: Yup.string().required("Username is required"),
+      username: Yup.string().required("Username is required"),
 
       email: Yup.string()
         .min(5, "Email should be at list 5 characters long")
         .required("Email is required"),
     }),
-    onSubmit: async() => {
-     await fetchData( `http://localhost:3000/api/users/forgot-password/${formik.values.username}`, 'POST', formik.values )
-    toast.success(response?.message)
+    onSubmit: async () => {
+      let response=await fetchData(
+        "POST",
+        `/users/forgot-password/${formik.values?.username}`,
+        formik.values
+      );
+      toast.success(response?.data?.message);
     },
   });
   return (
@@ -27,29 +31,29 @@ function ForgotPassword() {
           Forgot Password
         </h2>
         <form onSubmit={formik.handleSubmit} className="space-y-4">
-        <div>
-              <label htmlFor="username" className="block text-sm font-medium">
-                Username
-              </label>
-              <input
-                id="username"
-                name="username"
-                type="text"
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-                value={formik.values.username}
-                className={`outline-none mt-1 block w-full p-2 border rounded-md ${
-                  formik.touched.username && formik.errors.username
-                    ? "border-red-500"
-                    : "border-gray-300"
-                }`}
-              />
-              {formik.touched.username && formik.errors.username && (
-                <div className="text-red-500 text-sm mt-1">
-                  {formik.errors.username}
-                </div>
-              )}
-            </div>
+          <div>
+            <label htmlFor="username" className="block text-sm font-medium">
+              Username
+            </label>
+            <input
+              id="username"
+              name="username"
+              type="text"
+              onChange={formik.handleChange}
+              onBlur={formik.handleBlur}
+              value={formik.values.username}
+              className={`outline-none mt-1 block w-full p-2 border rounded-md ${
+                formik.touched.username && formik.errors.username
+                  ? "border-red-500"
+                  : "border-gray-300"
+              }`}
+            />
+            {formik.touched.username && formik.errors.username && (
+              <div className="text-red-500 text-sm mt-1">
+                {formik.errors.username}
+              </div>
+            )}
+          </div>
           <div>
             <label htmlFor="username" className="block text-sm font-medium">
               Email
@@ -77,7 +81,7 @@ function ForgotPassword() {
             type="submit"
             className="w-full bg-accent text-white font-bold py-2 px-4 rounded-md hover:opacity-90 transition-colors duration-300"
           >
-            {0 ? <Loading /> : "Get Email"}
+            {loading ? <Loading /> : "Get Email"}
           </button>
         </form>
       </div>

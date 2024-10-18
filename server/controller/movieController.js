@@ -37,7 +37,7 @@ export const getDetail = async (req, res, next) => {
     const movie = await fetchMovieDetails(movieDetailsUrl, tmbd_options, next);
     
     // Check if imdb_id exists before fetching movie detail from OMDb API
-    if (!movie.imdb_id) throw new CustomError("Movie IMBD ID not found");
+    if (!movie.imdb_id) throw new CustomError("Movie IMBD ID not found", 404);
     
     const movieCreditsUrl=tmbd_endpoints.movieCredits(movieId)
     const movieRecommendationUrl=tmbd_endpoints.movieRecommendations(movieId)

@@ -6,8 +6,8 @@ const transport = nodeMailer.createTransport({
     port: 465,
     auth:{
         //having problems with the variables works with hardcoding though
-        user: process.env.EMAIL_SENDER,
-        pass: process.env.GOOGLE_APP_PASSWORD
+        user: 'firaolts195@gmail.com',
+        pass: 'vxoltubknzwgdkhf'
     },
 })
 

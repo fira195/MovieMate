@@ -3,6 +3,7 @@ import MovieCard from "./MovieCard";
 import Loading, { Scroller } from "./helper";
 import useFetchData from "../hooks/useFetch2.0";
 import { btnClassName } from "../utils/css";
+import { Link } from "react-router-dom";
 
 function MovieHolder({ title, url }) {
   const { loading, error, fetchData } = useFetchData();
@@ -41,7 +42,7 @@ function MovieHolder({ title, url }) {
           <p>Couldn't Fetch Data</p>
           <button
             className={btnClassName}
-            onClick={() => fetchData(url, "GET")}
+            onClick={() => fetchData( "GET", url)}
           >
             Retry  
           </button>

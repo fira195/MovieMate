@@ -18,14 +18,13 @@ function useFetchData() {
         res = await api.put(url, body, { signal: abortController.signal });
       if (method === 'DELETE')
         res = await api.delete(url, {data:body, signal: abortController.signal });
-      console.log(res.data)
       return res.data;
     } catch (err) {
-      console.log(err);
       if (err.status !== 403) {
         const errorMessage =
-          err.response?.data?.data?.message || "Something went wrong";
+         err.response.data.data.message ||   err.message || "Something went wrong";
         toast.error(errorMessage);
+        console.log(errorMessage);
         setError(errorMessage);
       }
     } finally {
