@@ -1,7 +1,7 @@
-  import React, { useEffect } from "react";
+  import React, { useEffect, useState } from "react";
   import { useFormik } from "formik";
   import * as Yup from "yup";
-  import useFetchData from "../hooks/useFetch";
+  import useFetchData from "../hooks/useFetch2.0";
   import Loading from "../components/helper";
   import { Link, useLocation, useNavigate } from "react-router-dom";
   import { useDispatch, useSelector } from "react-redux";
@@ -14,8 +14,9 @@
     const location = useLocation()
 
     const user = useSelector((state) => state.user);
+    const { loading,error, fetchData } = useFetchData();
 
-    const { loading, err, response, fetchData } = useFetchData();
+    const [response, setResponse]=useState(null)
 
     const formik = useFormik({
       initialValues: {
@@ -30,11 +31,12 @@
       }),
       onSubmit: async () => {
         try {
-          await fetchData(
-            "http://localhost:3000/api/users/login",
+           const data=await fetchData(
             "POST",
+            "/users/login",
             formik.values
           );
+          setResponse(data.data)
         } catch (e) {
           toast.error(e);
         }
@@ -45,6 +47,7 @@
       if (localStorage.getItem("accessToken")) {
        return navigate(from);
       }
+      console.log(response)
       if (response) {
         dispatch(
           login({
@@ -118,7 +121,7 @@
               {loading ? <div className="size-8 m-auto"><Loading /></div> : "Login"}
             </button>
             <p className="text-sm"><Link to="/forgot-password">Forgot Password?</Link></p>
-            {err && <div className="text-red-500 text-sm mt-1">{err}</div>}
+            {error && <div className="text-red-500 text-sm mt-1">{error}</div>}
           </form>
         </div>
       </div>

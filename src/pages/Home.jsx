@@ -8,15 +8,15 @@ function Home() {
   const data = [
     {
       title: "Trending Movies",
-      url: "/api/movies/trending",
+      url: "/movies/trending",
     },
     {
       title: "Top Rated",
-      url: "/api/movies/top-rated",
+      url: "/movies/top-rated",
     },
     {
       title: "Liked Movies",
-      url: "/api/movies/trending",
+      url: "/movies/trending",
     },
   ];
 

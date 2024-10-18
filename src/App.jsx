@@ -5,7 +5,7 @@ import Profile from "./pages/profile/Profile";
 import Collection from "./pages/collection/Collection";
 import Discover from "./pages/Discover";
 import About from "./pages/About";
-import Landing from "./pages/Landing";
+import Landing from "./pages/landing/Landing";
 import Movie from "./pages/Movie";
 import Error from "./pages/Error";
 import Header from "./components/Header";

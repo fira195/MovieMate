@@ -9,7 +9,7 @@ function GenreComponent() {
 
   const data = {
     title: `${title.name}`,
-    url: `http://localhost:3000/api/movies/genre-movies/${title.id}`,
+    url: `/movies/genre-movies/${title.id}`,
   };
   
   function renderGenres() {
@@ -51,15 +51,19 @@ function GenreComponent() {
 }
 
 
+
+
+
+
 function Discover() {
   const data = [
     {
       title: "Top Rated",
-      url: `http://localhost:3000/api/movies/top-rated`,
+      url: `/movies/top-rated`,
     },
     {
       title: "Liked Movies",
-      url: "http://localhost:3000/api/movies/trending",
+      url: "/movies/trending",
     },
   ];
 ;
